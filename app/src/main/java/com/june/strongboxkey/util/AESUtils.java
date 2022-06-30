@@ -1,4 +1,4 @@
-package com.june.strongboxkey;
+package com.june.strongboxkey.util;
 
 import android.util.Base64;
 
