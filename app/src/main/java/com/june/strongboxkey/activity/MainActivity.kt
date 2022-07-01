@@ -1,6 +1,7 @@
 package com.june.strongboxkey.activity
 
 import android.os.Bundle
+import android.util.Base64
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -8,10 +9,10 @@ import com.june.strongboxkey.databinding.ActivityMainBinding
 import com.june.strongboxkey.model.KeyPairModel
 import com.june.strongboxkey.util.AESUtils
 import com.june.strongboxkey.util.KeyProvider
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-
     private var keyPairA: KeyPairModel? = null
     private var keyPairB: KeyPairModel? = null
     private var sharedSecretKey: ByteArray? = null
@@ -50,9 +51,14 @@ class MainActivity : AppCompatActivity() {
         userMessageTextView.text = userInput
 
         val encryption = AESUtils().encryption(userInput, sharedSecretKey!!)
-        binding.encryptionTextView.text = encryption.toString()
+        binding.encryptionTextView.text = encryption
+
+//        binding.encryptionTextView.text = String(encryption) //TODO
+
 
         val decryption = AESUtils().decryption(encryption, sharedSecretKey!!)
         binding.decryptionTextView.text = decryption
+
+        messageEditText.text = null
     }
 }

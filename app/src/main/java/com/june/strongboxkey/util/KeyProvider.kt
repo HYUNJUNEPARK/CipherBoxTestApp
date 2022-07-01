@@ -1,5 +1,6 @@
 package com.june.strongboxkey.util
 
+import android.util.Log
 import com.june.strongboxkey.constant.Constants.CURVE_TYPE
 import com.june.strongboxkey.constant.Constants.KEY_AGREEMENT_ALGORITHM
 import com.june.strongboxkey.constant.Constants.KEY_ALGORITHM
@@ -15,6 +16,10 @@ class KeyProvider {
         val keyPairGenerator = KeyPairGenerator.getInstance(KEY_GEN_ALGORITHM) //EC
         keyPairGenerator.initialize(ECGenParameterSpec(CURVE_TYPE)) //secp256r1
         val keyPair = keyPairGenerator.generateKeyPair()
+
+        //TODO check private key
+        Log.d("testLog", "Private : ${keyPair.private} // Public : ${keyPair.public} ")
+
         return KeyPairModel(keyPair.private, keyPair.public)
     }
 
@@ -25,7 +30,6 @@ class KeyProvider {
         val sharedSecretKey: ByteArray = keyAgreement.generateSecret()
         return sharedSecretKey
     }
-
 
     //https://developer.android.com/reference/java/security/MessageDigest
     //update : 해시할 데이터를 추가 (ssk / random)
