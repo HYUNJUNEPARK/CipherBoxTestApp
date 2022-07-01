@@ -76,8 +76,14 @@ public class AESUtils {
         Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM);
         //初始化，设置解密模式
         cipher.init(Cipher.ENCRYPT_MODE, k);
+
         return cipher.doFinal(data);
     }
+
+
+
+
+
 
     /**
      * AES加密

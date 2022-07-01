@@ -2,9 +2,9 @@ package com.june.strongboxkey
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
-import com.june.strongboxkey.util.AESUtils
+import com.june.strongboxkey.util.Decryption
+import com.june.strongboxkey.util.Encryption
 import com.june.strongboxkey.util.KeyProvider
 
 class MainActivity : AppCompatActivity() {
@@ -15,20 +15,19 @@ class MainActivity : AppCompatActivity() {
         val keyPairA = KeyProvider().keyPair() //sender
         val keyPairB = KeyProvider().keyPair() //recipient
 
-        val sharedSecretKey_byte = KeyProvider().sharedSecretKey(keyPairA.privateKey, keyPairB.publicKey)
-        Log.d("testLog", "shared secret key: $sharedSecretKey_byte")
 
-        val sharedSecretKey_str = Base64.encodeToString(sharedSecretKey_byte, Base64.DEFAULT)
+//        val sharedSecretKey: String = KeyProvider().sharedSecretKey(keyPairA.privateKey, keyPairB.publicKey)
+//        val encryption = Encryption().encryption("user Input", sharedSecretKey)
+//        val decryption = Decryption().decryption(encryption, sharedSecretKey)
+//        Log.d("testLog", "DECRYPTION: $decryption")
+//
+        val sharedSecretKey_: ByteArray = KeyProvider().sharedSecretKey__(keyPairA.privateKey, keyPairB.publicKey)
+        val encryption__ = Encryption().encryption__("user Input", sharedSecretKey_)
+        val decryption__ = Decryption().decryption__(encryption__, sharedSecretKey_)
+
+        Log.d("testLog", "onCreate11111: $decryption__")
 
 
 
-
-
-
-        val encryption = AESUtils.encrypt("aaabbbccc", sharedSecretKey_str)
-        Log.d("testLog", "ENCRYPTION: $encryption")
-
-        val decryption = AESUtils.decrypt(encryption, sharedSecretKey_str)
-        Log.d("testLog", "DECRYPTION: $decryption")
     }
 }
