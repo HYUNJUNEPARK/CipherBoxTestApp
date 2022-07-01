@@ -23,7 +23,6 @@ class KeyProvider {
         keyAgreement.init(senderPrivateKey)
         keyAgreement.doPhase(recipientPublicKey, true)
         val sharedSecretKey: ByteArray = keyAgreement.generateSecret()
-        //val sharedSecretKey:String = Base64.encodeToString(_sharedSecretKey, Base64.DEFAULT)
         return sharedSecretKey
     }
 
