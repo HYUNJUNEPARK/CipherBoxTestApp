@@ -1,10 +1,9 @@
 package com.june.strongboxkey.util
 
-import android.util.Base64
-import com.june.strongboxkey.Constants.CURVE_TYPE
-import com.june.strongboxkey.Constants.KEY_AGREEMENT_ALGORITHM
-import com.june.strongboxkey.Constants.KEY_ALGORITHM
-import com.june.strongboxkey.Constants.KEY_GEN_ALGORITHM
+import com.june.strongboxkey.constant.Constants.CURVE_TYPE
+import com.june.strongboxkey.constant.Constants.KEY_AGREEMENT_ALGORITHM
+import com.june.strongboxkey.constant.Constants.KEY_ALGORITHM
+import com.june.strongboxkey.constant.Constants.KEY_GEN_ALGORITHM
 import com.june.strongboxkey.model.KeyPairModel
 import java.security.*
 import java.security.spec.ECGenParameterSpec
@@ -19,22 +18,13 @@ class KeyProvider {
         return KeyPairModel(keyPair.private, keyPair.public)
     }
 
-    fun sharedSecretKey(senderPrivateKey: PrivateKey, recipientPublicKey: PublicKey): String {
+    fun sharedSecretKey(senderPrivateKey: PrivateKey, recipientPublicKey: PublicKey): ByteArray {
         val keyAgreement = KeyAgreement.getInstance(KEY_AGREEMENT_ALGORITHM) //ECDH
         keyAgreement.init(senderPrivateKey)
         keyAgreement.doPhase(recipientPublicKey, true)
-        val _sharedSecretKey: ByteArray = keyAgreement.generateSecret()
-        val sharedSecretKey:String = Base64.encodeToString(_sharedSecretKey, Base64.DEFAULT)
-        return sharedSecretKey
-    }
-
-    fun sharedSecretKey__(senderPrivateKey: PrivateKey, recipientPublicKey: PublicKey): ByteArray {
-        val keyAgreement = KeyAgreement.getInstance(KEY_AGREEMENT_ALGORITHM) //ECDH
-        keyAgreement.init(senderPrivateKey)
-        keyAgreement.doPhase(recipientPublicKey, true)
-        val _sharedSecretKey: ByteArray = keyAgreement.generateSecret()
+        val sharedSecretKey: ByteArray = keyAgreement.generateSecret()
         //val sharedSecretKey:String = Base64.encodeToString(_sharedSecretKey, Base64.DEFAULT)
-        return _sharedSecretKey
+        return sharedSecretKey
     }
 
 

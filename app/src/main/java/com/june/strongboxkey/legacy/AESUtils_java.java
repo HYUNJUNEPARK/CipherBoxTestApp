@@ -1,4 +1,4 @@
-package com.june.strongboxkey.util;
+package com.june.strongboxkey.legacy;
 
 import android.util.Base64;
 
@@ -12,7 +12,7 @@ import javax.crypto.spec.SecretKeySpec;
  * Created by leidong on 2017/5/9.
  */
 
-public class AESUtils {
+public class AESUtils_java {
     /**
      * 密钥算法
      */
@@ -79,11 +79,6 @@ public class AESUtils {
 
         return cipher.doFinal(data);
     }
-
-
-
-
-
 
     /**
      * AES加密
