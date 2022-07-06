@@ -35,13 +35,6 @@ class MainActivity : AppCompatActivity() {
         initKeyPairView()
     }
 
-    private fun initKeyPairView() {
-        if (keyPairA?.privateKey != null) binding.privateKeyAText.visibility = View.VISIBLE else binding.privateKeyAText.visibility = View.INVISIBLE
-        if (keyPairA?.publicKey != null) binding.publicKeyAText.visibility = View.VISIBLE else binding.publicKeyAText.visibility = View.INVISIBLE
-        if (keyPairB?.privateKey != null) binding.privateKeyBText.visibility = View.VISIBLE else binding.privateKeyBText.visibility = View.INVISIBLE
-        if (keyPairB?.publicKey != null) binding.publicKeyBText.visibility = View.VISIBLE else binding.publicKeyBText.visibility = View.INVISIBLE
-    }
-
     fun messageSendButtonClicked(v: View) = with(binding) {
         if (keyPairA == null || keyPairB == null || sharedSecretKey == null) {
             Toast.makeText(this@MainActivity, "암복호화 키 필요", Toast.LENGTH_SHORT).show()
@@ -49,16 +42,17 @@ class MainActivity : AppCompatActivity() {
         }
         val userInput = messageEditText.text.toString()
         userMessageTextView.text = userInput
-
         val encryption = AESUtils().encryption(userInput, sharedSecretKey!!)
         binding.encryptionTextView.text = encryption
-
-//        binding.encryptionTextView.text = String(encryption) //TODO
-
-
         val decryption = AESUtils().decryption(encryption, sharedSecretKey!!)
         binding.decryptionTextView.text = decryption
-
         messageEditText.text = null
+    }
+
+    private fun initKeyPairView() {
+        if (keyPairA?.privateKey != null) binding.privateKeyAText.visibility = View.VISIBLE else binding.privateKeyAText.visibility = View.INVISIBLE
+        if (keyPairA?.publicKey != null) binding.publicKeyAText.visibility = View.VISIBLE else binding.publicKeyAText.visibility = View.INVISIBLE
+        if (keyPairB?.privateKey != null) binding.privateKeyBText.visibility = View.VISIBLE else binding.privateKeyBText.visibility = View.INVISIBLE
+        if (keyPairB?.publicKey != null) binding.publicKeyBText.visibility = View.VISIBLE else binding.publicKeyBText.visibility = View.INVISIBLE
     }
 }

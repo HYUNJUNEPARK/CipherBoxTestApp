@@ -41,9 +41,9 @@
         app:layout_constraintTop_toTopOf="@id/keyGenButton">
 
         <LinearLayout
-            android:layout_marginBottom="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -56,7 +56,7 @@
                 android:id="@+id/publicKeyAText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Public Key] "
+                android:text="[Public Key_A] "
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:visibility="invisible"
@@ -66,7 +66,7 @@
                 android:id="@+id/privateKeyAText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" [Private Key] "
+                android:text=" [Private Key_A] "
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:visibility="invisible"
@@ -74,9 +74,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <TextView
@@ -89,7 +89,7 @@
                 android:id="@+id/publicKeyBText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Public Key] "
+                android:text="[Public Key_B] "
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:visibility="invisible"
@@ -99,7 +99,7 @@
                 android:id="@+id/privateKeyBText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" [Private Key] "
+                android:text=" [Private Key_B] "
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:visibility="invisible"
@@ -160,11 +160,11 @@
         <Button
             android:id="@+id/messageSendButton"
             android:layout_width="0dp"
-            android:onClick="messageSendButtonClicked"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minWidth="0dp"
             android:minHeight="0dp"
+            android:onClick="messageSendButtonClicked"
             android:text="send"
             android:textSize="12sp" />
     </LinearLayout>
@@ -241,5 +241,31 @@
             android:background="#989393" />
     </LinearLayout>
 
+    <Button
+        android:id="@+id/detailKeyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:text="detail public key"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/resultLayout" />
+
+    <LinearLayout
+        android:id="@+id/publicKeyDetailView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/detailKeyButton">
+
+        <TextView
+            android:text="Public Key A"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

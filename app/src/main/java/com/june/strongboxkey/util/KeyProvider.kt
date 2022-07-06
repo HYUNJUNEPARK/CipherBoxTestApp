@@ -16,18 +16,22 @@ class KeyProvider {
         val keyPairGenerator = KeyPairGenerator.getInstance(KEY_GEN_ALGORITHM) //EC
         keyPairGenerator.initialize(ECGenParameterSpec(CURVE_TYPE)) //secp256r1
         val keyPair = keyPairGenerator.generateKeyPair()
-
-        //TODO check private key
-        Log.d("testLog", "Private : ${keyPair.private} // Public : ${keyPair.public} ")
-
         return KeyPairModel(keyPair.private, keyPair.public)
     }
 
     fun sharedSecretKey(senderPrivateKey: PrivateKey, recipientPublicKey: PublicKey): ByteArray {
+        Log.d("testLog", "$senderPrivateKey // $recipientPublicKey")
         val keyAgreement = KeyAgreement.getInstance(KEY_AGREEMENT_ALGORITHM) //ECDH
         keyAgreement.init(senderPrivateKey)
         keyAgreement.doPhase(recipientPublicKey, true)
         val sharedSecretKey: ByteArray = keyAgreement.generateSecret()
+        Log.d("testLog", "sharedSecretKey: ${String(sharedSecretKey)}")
+
+
+        //TODO 완성된 키에 랜덤넘버를 더하고 SHA 256 으로 해시 생성
+        //TODO 생성된 해시를 바로 키로 사용할 수 있음 ? or 생성된 해시를 키로 바꿔주는 과정이 한번 더 필요?
+
+
         return sharedSecretKey
     }
 
