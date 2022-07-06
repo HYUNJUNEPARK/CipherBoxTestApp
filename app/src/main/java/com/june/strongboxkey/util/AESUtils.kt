@@ -1,14 +1,16 @@
 package com.june.strongboxkey.util
 
 import android.util.Base64
+import com.june.strongboxkey.constant.Constants
 import com.june.strongboxkey.constant.Constants.CIPHER_ALGORITHM
 import java.security.Key
 import javax.crypto.Cipher
+import javax.crypto.spec.SecretKeySpec
 
 class AESUtils {
     fun encryption(data: String, key: ByteArray): String {
         val data: ByteArray = data.toByteArray()
-        val key: Key = KeyProvider().byteArrayToKey(key)
+        val key: Key = byteArrayToKey(key)
         val cipher = Cipher.getInstance(CIPHER_ALGORITHM) //AES/ECB/PKCS5Padding
         cipher.init(Cipher.ENCRYPT_MODE, key)
         val _result: ByteArray = cipher.doFinal(data)
@@ -17,11 +19,15 @@ class AESUtils {
     }
 
     fun decryption(data: String, key: ByteArray): String {
-        val key: Key = KeyProvider().byteArrayToKey(key)
+        val key: Key = byteArrayToKey(key)
         val cipher = Cipher.getInstance(CIPHER_ALGORITHM) //AES/ECB/PKCS5Padding
         cipher.init(Cipher.DECRYPT_MODE, key)
         val data: ByteArray = Base64.decode(data, Base64.DEFAULT)
         val result: ByteArray = cipher.doFinal(data)
         return String(result)
+    }
+
+    fun byteArrayToKey(sharedSecretKey : ByteArray): Key {
+        return SecretKeySpec(sharedSecretKey, Constants.KEY_ALGORITHM)
     }
 }

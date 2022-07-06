@@ -6,4 +6,5 @@ object Constants {
     const val KEY_AGREEMENT_ALGORITHM = "ECDH"
     const val KEY_ALGORITHM = "AES"
     const val CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding"
+    const val MESSAGE_DIGEST_ALGORITHM = "SHA-256"
 }

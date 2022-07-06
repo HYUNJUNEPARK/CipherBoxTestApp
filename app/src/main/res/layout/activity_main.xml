@@ -240,32 +240,4 @@
             android:layout_marginBottom="7dp"
             android:background="#989393" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/detailKeyButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="0dp"
-        android:minHeight="0dp"
-        android:text="detail public key"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/resultLayout" />
-
-    <LinearLayout
-        android:id="@+id/publicKeyDetailView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/detailKeyButton">
-
-        <TextView
-            android:text="Public Key A"
-            android:textColor="@color/black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
