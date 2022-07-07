@@ -17,13 +17,13 @@ class KeyProvider {
         return KeyPairModel(keyPair.private, keyPair.public)
     }
 
-    fun sharedSecretKey(senderPrivateKey: PrivateKey, recipientPublicKey: PublicKey): ByteArray {
+    fun sharedSecretKeyHash(senderPrivateKey: PrivateKey, recipientPublicKey: PublicKey): ByteArray {
         val keyAgreement = KeyAgreement.getInstance(KEY_AGREEMENT_ALGORITHM) //ECDH
         keyAgreement.init(senderPrivateKey)
         keyAgreement.doPhase(recipientPublicKey, true)
         val sharedSecretKey: ByteArray = keyAgreement.generateSecret()
-        val key = hashSHA256(sharedSecretKey)
-        return key
+        val hash = hashSHA256(sharedSecretKey)
+        return hash
     }
 
     private fun hashSHA256(key: ByteArray): ByteArray {
@@ -31,7 +31,7 @@ class KeyProvider {
         try {
             val messageDigest = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM) //SHA-256
             messageDigest.update(key)
-            hash = messageDigest.digest(randomNumberGenerator())
+            hash = messageDigest.digest(randomByteArrayGenerator())
         }
         catch (e: CloneNotSupportedException) {
             throw DigestException("$e")
@@ -39,10 +39,9 @@ class KeyProvider {
         return hash
     }
 
-    private fun randomNumberGenerator(): ByteArray{
-        //val scRan = SecureRandom()
-        val bytes = ByteArray(32)
-        SecureRandom().nextBytes(bytes)
-        return bytes
+    private fun randomByteArrayGenerator(): ByteArray {
+        val randomByteArray = ByteArray(32)
+        SecureRandom().nextBytes(randomByteArray)
+        return randomByteArray
     }
 }

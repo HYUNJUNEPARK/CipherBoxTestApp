@@ -1,7 +1,6 @@
 package com.june.strongboxkey.activity
 
 import android.os.Bundle
-import android.util.Base64
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -9,13 +8,12 @@ import com.june.strongboxkey.databinding.ActivityMainBinding
 import com.june.strongboxkey.model.KeyPairModel
 import com.june.strongboxkey.util.AESUtils
 import com.june.strongboxkey.util.KeyProvider
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var keyPairA: KeyPairModel? = null
     private var keyPairB: KeyPairModel? = null
-    private var sharedSecretKey: ByteArray? = null
+    private var sharedSecretKeyHash: ByteArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         keyPairB = KeyProvider().keyPair() //recipient
 
         if (keyPairA != null && keyPairB != null) {
-            sharedSecretKey = KeyProvider().sharedSecretKey(keyPairA!!.privateKey, keyPairB!!.publicKey)
+            sharedSecretKeyHash = KeyProvider().sharedSecretKeyHash(keyPairA!!.privateKey, keyPairB!!.publicKey)
         }
         else {
             Toast.makeText(this, "Shared Secret Key 생성 실패", Toast.LENGTH_SHORT).show()
@@ -36,15 +34,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun messageSendButtonClicked(v: View) = with(binding) {
-        if (keyPairA == null || keyPairB == null || sharedSecretKey == null) {
+        if (keyPairA == null || keyPairB == null || sharedSecretKeyHash == null) {
             Toast.makeText(this@MainActivity, "암복호화 키 필요", Toast.LENGTH_SHORT).show()
             return@with
         }
         val userInput = messageEditText.text.toString()
         userMessageTextView.text = userInput
-        val encryption = AESUtils().encryption(userInput, sharedSecretKey!!)
+        val encryption = AESUtils().encryption(userInput, sharedSecretKeyHash!!)
         binding.encryptionTextView.text = encryption
-        val decryption = AESUtils().decryption(encryption, sharedSecretKey!!)
+        val decryption = AESUtils().decryption(encryption, sharedSecretKeyHash!!)
         binding.decryptionTextView.text = decryption
         messageEditText.text = null
     }

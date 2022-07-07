@@ -8,9 +8,9 @@ import javax.crypto.Cipher
 import javax.crypto.spec.SecretKeySpec
 
 class AESUtils {
-    fun encryption(data: String, key: ByteArray): String {
+    fun encryption(data: String, hash: ByteArray): String {
         val data: ByteArray = data.toByteArray()
-        val key: Key = byteArrayToKey(key)
+        val key: Key = byteArrayToKey(hash)
         val cipher = Cipher.getInstance(CIPHER_ALGORITHM) //AES/ECB/PKCS5Padding
         cipher.init(Cipher.ENCRYPT_MODE, key)
         val _result: ByteArray = cipher.doFinal(data)
@@ -18,8 +18,8 @@ class AESUtils {
         return result
     }
 
-    fun decryption(data: String, key: ByteArray): String {
-        val key: Key = byteArrayToKey(key)
+    fun decryption(data: String, hash: ByteArray): String {
+        val key: Key = byteArrayToKey(hash)
         val cipher = Cipher.getInstance(CIPHER_ALGORITHM) //AES/ECB/PKCS5Padding
         cipher.init(Cipher.DECRYPT_MODE, key)
         val data: ByteArray = Base64.decode(data, Base64.DEFAULT)
@@ -27,7 +27,7 @@ class AESUtils {
         return String(result)
     }
 
-    fun byteArrayToKey(sharedSecretKey : ByteArray): Key {
+    private fun byteArrayToKey(sharedSecretKey : ByteArray): Key {
         return SecretKeySpec(sharedSecretKey, Constants.KEY_ALGORITHM)
     }
 }

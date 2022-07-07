@@ -1,14 +1,29 @@
 1. <a href = "#content1">Base64</a></br>
-2. <a href = "#content2">KeyStore</a></br>
-3. <a href = "#content3">content3</a></br>
 * <a href = "#ref">참고링크</a>
 ---
+**ECC(Elliptic Curve Cryptography, 타원곡선 암호 기술)** : EC(타원곡선)를 사용한 암호기술의 총체적인 이름</br>
+-ECDSA : 디지털서명 용도</br>
+-ECDH : 키교환 용도</br>
+-Dual-EC-DRBG : 난수 생성용도</br>
+<br></br>
+
+**SHA-256(Secure Hash Algorithm)** : 어떤 길이의 값을 입력하더라도 256비트 고정된 결과값 반환(64자리 문자열)</br>
+-단방향 암호화(평문으로 복호화할 수 없는 암호화)로 속도가 빠르며 비밀번호 일치여부 확인에 많이 사용됨</br>
+<br></br>
+
+**테스트 앱 시나리오**</br>
+EC 알고리즘 기반 키페어 생성(private/public key)</br>
+-> 내 개인 키(private key)와 상대방 공개 키(public key) 로 공용키(Shared Secret Key) 생성</br>
+-> 생성된 공용키(32 bytes)에 랜덤 바이트 배열(32 bytes)을 사용해 SHA-256 으로 해시값 생성(64 byte)</br>
+-> 해시값을 키로 캐스팅하고 암호화/복호화에 사용</br>
+<br></br>
+
 ><a id = "content1">**1. Base64**</a></br>
 
--8비트 이진 데이터를 문자 코드에 영향을 받지 않는 공통 아스키(ASCII(*1)) 영역의 "문자"들로만(*2) 이루어진 일련의 문자열로 바꾸는 인코딩 방식을 가리키는 개념
--64진법으로 A-Z, a-z, 0-9 총 62개 문자숫자 + 2개의 기호 사용
-*1: 알바벳을 사용하는 대표적인 문자 인코딩
-*2: 문자가 아닌 데이터 ex. 백스페이스, 수직탭 등
+-8비트 이진 데이터를 문자 코드에 영향을 받지 않는 공통 아스키(ASCII(*1)) 영역의 "문자"들로만(*2) 이루어진 일련의 문자열로 바꾸는 인코딩 방식을 가리키는 개념</br>
+-64진법으로 A-Z, a-z, 0-9 총 62개 문자숫자 + 2개의 기호 사용</br>
+*1: 알바벳을 사용하는 대표적인 문자 인코딩</br>
+*2: 문자가 아닌 데이터 ex. 백스페이스, 수직탭 등</br>
 
 ```kotlin
 import android.util.Base64
@@ -22,23 +37,6 @@ val encoded: String = Base64.encodeToString(testString.toByteArray(), Base64.DEF
 val decoded_bytes = Base64.decode(encoded, Base64.DEFAULT)
 val decoded_str = String(decoded_bytes) //Output : test text
 ```
-
-<br></br>
-<br></br>
-
-><a id = "content2">**2. KeyStore**</a></br>
-
-
-
-
-<br></br>
-<br></br>
-
-
-><a id = "content3">**3. content3**</a></br>
-
-
-
 
 <br></br>
 <br></br>
