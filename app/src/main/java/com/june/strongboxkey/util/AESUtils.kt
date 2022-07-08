@@ -27,7 +27,7 @@ class AESUtils {
         return String(result)
     }
 
-    private fun byteArrayToKey(sharedSecretKey : ByteArray): Key {
-        return SecretKeySpec(sharedSecretKey, Constants.KEY_ALGORITHM)
+    private fun byteArrayToKey(sharedSecretKeyHash : ByteArray): Key {
+        return SecretKeySpec(sharedSecretKeyHash, Constants.KEY_ALGORITHM)
     }
 }

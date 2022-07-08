@@ -1,3 +1,6 @@
+<img src="https://github.com/HYUNJUNEPARK/ImageRepository/blob/master/AES/AESModule.png" height="400"/>
+
+---
 1. <a href = "#content1">Base64</a></br>
 * <a href = "#ref">참고링크</a>
 ---
@@ -7,15 +10,15 @@
 -Dual-EC-DRBG : 난수 생성용도</br>
 <br></br>
 
-**SHA-256(Secure Hash Algorithm)** : 어떤 길이의 값을 입력하더라도 256비트 고정된 결과값 반환(64자리 문자열)</br>
+**SHA-256(Secure Hash Algorithm)** : 어떤 길이의 값을 입력하더라도 256비트(32바이트) 고정된 결과값 반환</br>
 -단방향 암호화(평문으로 복호화할 수 없는 암호화)로 속도가 빠르며 비밀번호 일치여부 확인에 많이 사용됨</br>
 <br></br>
 
-**테스트 앱 시나리오**</br>
+**AES 테스트 앱 시나리오**</br>
 EC 알고리즘 기반 키페어 생성(private/public key)</br>
 -> 내 개인 키(private key)와 상대방 공개 키(public key) 로 공용키(Shared Secret Key) 생성</br>
--> 생성된 공용키(32 bytes)에 랜덤 바이트 배열(32 bytes)을 사용해 SHA-256 으로 해시값 생성(64 byte)</br>
--> 해시값을 키로 캐스팅하고 암호화/복호화에 사용</br>
+-> 생성된 공용키(Shared Secret Key)(32 bytes)에 랜덤 바이트 배열(32 bytes)을 사용해 SHA-256 으로 해시 생성(32 byte)</br>
+-> 해시를 키로 캐스팅하고 암호화/복호화에 사용</br>
 <br></br>
 
 ><a id = "content1">**1. Base64**</a></br>
