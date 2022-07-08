@@ -14,10 +14,10 @@
 -단방향 암호화(평문으로 복호화할 수 없는 암호화)로 속도가 빠르며 비밀번호 일치여부 확인에 많이 사용됨</br>
 <br></br>
 
-**AES 테스트 앱 시나리오**</br>
+**AES 테스트 앱 암복호화 과정**</br>
 EC 알고리즘 기반 키페어 생성(private/public key)</br>
--> 내 개인 키(private key)와 상대방 공개 키(public key) 로 공용키(Shared Secret Key) 생성</br>
--> 생성된 공용키(Shared Secret Key)(32 bytes)에 랜덤 바이트 배열(32 bytes)을 사용해 SHA-256 으로 해시 생성(32 byte)</br>
+-> 내 개인 키(private key)와 상대방 공개 키(public key) 로 공유키(Shared Secret Key) 생성</br>
+-> 생성된 공유키(Shared Secret Key)(32 bytes)에 랜덤 바이트 배열(32 bytes)을 사용해 SHA-256 으로 해시 생성(32 byte)</br>
 -> 해시를 키로 캐스팅하고 암호화/복호화에 사용</br>
 <br></br>
 
