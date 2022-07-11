@@ -1,6 +1,7 @@
 package com.june.strongboxkey.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -40,11 +41,24 @@ class MainActivity : AppCompatActivity() {
         }
         val userInput = messageEditText.text.toString()
         userMessageTextView.text = userInput
-        val encryption = AESUtils().encryption(userInput, sharedSecretKeyHash!!)
-        binding.encryptionTextView.text = encryption
-        val decryption = AESUtils().decryption(encryption, sharedSecretKeyHash!!)
-        binding.decryptionTextView.text = decryption
+
+
+        val encryptionECB = AESUtils().encryptionECBMode(userInput, sharedSecretKeyHash!!)
+        binding.encryptionECBTextView.text = encryptionECB
+        val decryptionECB = AESUtils().decryptionECBMode(encryptionECB, sharedSecretKeyHash!!)
+        binding.decryptionECBTextView.text = decryptionECB
+
+
+        //CBC
+        val encryptionCBC = AESUtils().encryptionCBCMode(userInput, sharedSecretKeyHash!!)
+        binding.encryptionCBCTextView.text = encryptionCBC
+
+        val decryptionCBC = AESUtils().decryptionCBCMode(encryptionECB, sharedSecretKeyHash!!)
+//        Log.d("testLog", "decryptionCBC: $decryptionCBC ")
         messageEditText.text = null
+
+
+
     }
 
     private fun initKeyPairView() {

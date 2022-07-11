@@ -1,6 +1,5 @@
 package com.june.strongboxkey.util
 
-import android.security.keystore.KeyProperties
 import com.june.strongboxkey.constant.Constants.CURVE_TYPE
 import com.june.strongboxkey.constant.Constants.KEY_AGREEMENT_ALGORITHM
 import com.june.strongboxkey.constant.Constants.KEY_GEN_ALGORITHM
