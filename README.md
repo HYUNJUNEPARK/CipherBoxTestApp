@@ -71,3 +71,6 @@ https://developer.android.com/reference/kotlin/android/security/keystore/KeyGenP
 
 Base64 encoding and decoding in Kotlin (Base64 샘플 코드에서 참고)</br>
 https://www.techiedelight.com/base64-encoding-and-decoding-in-kotlin/</br>
+
+AES 암호화 모듈 및 ECB/CBC Mode 차이점</br>
+https://linuxforge.tistory.com/191</br>

@@ -57,9 +57,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initKeyPairView() {
-        if (keyPairA?.privateKey != null) binding.privateKeyAText.visibility = View.VISIBLE else binding.privateKeyAText.visibility = View.INVISIBLE
-        if (keyPairA?.publicKey != null) binding.publicKeyAText.visibility = View.VISIBLE else binding.publicKeyAText.visibility = View.INVISIBLE
-        if (keyPairB?.privateKey != null) binding.privateKeyBText.visibility = View.VISIBLE else binding.privateKeyBText.visibility = View.INVISIBLE
-        if (keyPairB?.publicKey != null) binding.publicKeyBText.visibility = View.VISIBLE else binding.publicKeyBText.visibility = View.INVISIBLE
+        if (keyPairA?.privateKey != null) binding.privateKeyAText.visibility = View.VISIBLE
+            else binding.privateKeyAText.visibility = View.INVISIBLE
+        if (keyPairA?.publicKey != null) binding.publicKeyAText.visibility = View.VISIBLE
+            else binding.publicKeyAText.visibility = View.INVISIBLE
+        if (keyPairB?.privateKey != null) binding.privateKeyBText.visibility = View.VISIBLE
+            else binding.privateKeyBText.visibility = View.INVISIBLE
+        if (keyPairB?.publicKey != null) binding.publicKeyBText.visibility = View.VISIBLE
+            else binding.publicKeyBText.visibility = View.INVISIBLE
     }
 }

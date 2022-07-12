@@ -11,13 +11,13 @@ import javax.crypto.spec.SecretKeySpec
 
 class AESUtils {
     companion object {
-        var iv: ByteArray? = null
+        var iv: ByteArray? = ByteArray(16)
     }
 
     //ECB Mode
     fun encryptionECBMode(userInputData: String, hash: ByteArray): String {
         val userInputData: ByteArray = userInputData.toByteArray()
-        val key: Key = byteArrayToKey(hash)
+        val key: Key = hashToKey(hash)
         val cipher = Cipher.getInstance(CIPHER_ECB_ALGORITHM) //AES/ECB/PKCS5Padding
         cipher.init(
             Cipher.ENCRYPT_MODE,
@@ -29,7 +29,7 @@ class AESUtils {
     }
 
     fun decryptionECBMode(encryptedData: String, hash: ByteArray): String {
-        val key: Key = byteArrayToKey(hash)
+        val key: Key = hashToKey(hash)
         val cipher = Cipher.getInstance(CIPHER_ECB_ALGORITHM) //AES/ECB/PKCS5Padding
         cipher.init(
             Cipher.DECRYPT_MODE,
@@ -42,21 +42,23 @@ class AESUtils {
 
     //CBC Mode
     fun encryptionCBCMode(userInputData: String, hash: ByteArray): String {
-        val key: Key = byteArrayToKey(hash)
+        val key: Key = hashToKey(hash)
         val userInputData: ByteArray = userInputData.toByteArray()
         val cipher = Cipher.getInstance(CIPHER_CBC_ALGORITHM) //AES/CBC/PKCS7Padding
+
         cipher.init(
             Cipher.ENCRYPT_MODE,
-            key
+            key,
+            IvParameterSpec(iv)
         )
-        iv = cipher.iv
+
         val _result: ByteArray = cipher.doFinal(userInputData)
         val result: String = Base64.encodeToString(_result, Base64.DEFAULT)
         return result
     }
 
     fun decryptionCBCMode(encryptedData: String, hash: ByteArray): String {
-        val key: Key = byteArrayToKey(hash)
+        val key: Key = hashToKey(hash)
         val cipher = Cipher.getInstance(CIPHER_CBC_ALGORITHM) //AES/CBC/PKCS7Padding
         cipher.init(
             Cipher.DECRYPT_MODE,
@@ -69,7 +71,7 @@ class AESUtils {
     }
 
     //common
-    private fun byteArrayToKey(sharedSecretKeyHash : ByteArray): Key {
+    private fun hashToKey(sharedSecretKeyHash : ByteArray): Key {
         return SecretKeySpec(sharedSecretKeyHash, KEY_ALGORITHM)
     }
 }
