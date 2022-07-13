@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var keyPairA: KeyPairModel? = null
     private var keyPairB: KeyPairModel? = null
-    private var sharedSecretKeyHash: ByteArray? = null
+    private var sharedSecretHash: ByteArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         keyPairB = KeyProvider().keyPair() //recipient
 
         if (keyPairA != null && keyPairB != null) {
-            sharedSecretKeyHash = KeyProvider().sharedSecretKeyHash(keyPairA!!.privateKey, keyPairB!!.publicKey)
+            sharedSecretHash = KeyProvider().sharedSecretHash(keyPairA!!.privateKey, keyPairB!!.publicKey)
         }
         else {
             Toast.makeText(this, "Shared Secret Key 생성 실패", Toast.LENGTH_SHORT).show()
@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun messageSendButtonClicked(v: View) = with(binding) {
-        if (keyPairA == null || keyPairB == null || sharedSecretKeyHash == null) {
+        if (keyPairA == null || keyPairB == null || sharedSecretHash == null) {
             Toast.makeText(this@MainActivity, "암복호화 키 필요", Toast.LENGTH_SHORT).show()
             return@with
         }
@@ -42,15 +42,15 @@ class MainActivity : AppCompatActivity() {
         userMessageTextView.text = userInput
 
         //ECB
-        val encryptionECB = AESUtils().encryptionECBMode(userInput, sharedSecretKeyHash!!)
+        val encryptionECB = AESUtils().encryptionECBMode(userInput, sharedSecretHash!!)
         binding.encryptionECBTextView.text = encryptionECB
-        val decryptionECB = AESUtils().decryptionECBMode(encryptionECB, sharedSecretKeyHash!!)
+        val decryptionECB = AESUtils().decryptionECBMode(encryptionECB, sharedSecretHash!!)
         binding.decryptionECBTextView.text = decryptionECB
 
         //CBC
-        val encryptionCBC = AESUtils().encryptionCBCMode(userInput, sharedSecretKeyHash!!)
+        val encryptionCBC = AESUtils().encryptionCBCMode(userInput, sharedSecretHash!!)
         binding.encryptionCBCTextView.text = encryptionCBC
-        val decryptionCBC = AESUtils().decryptionCBCMode(encryptionCBC, sharedSecretKeyHash!!)
+        val decryptionCBC = AESUtils().decryptionCBCMode(encryptionCBC, sharedSecretHash!!)
         binding.decryptionCBCTextView.text = decryptionCBC
 
         messageEditText.text = null

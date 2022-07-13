@@ -60,6 +60,12 @@ val decoded_str = String(decoded_bytes) //Output : test text
 
 ><a id = "ref">**참고링크**</a></br>
 
+Save and Retrieve KeyPair in AndroidKeystore</br> (updadteKeyPairToKeyStore()/keyStoreKeyPair 에서 참고)
+https://stackoverflow.com/questions/42110123/save-and-retrieve-keypair-in-androidkeystore</br>
+
+AES/CBC 암복호화 참고 코드</br>
+http://www.fun25.co.kr/blog/java-aes128-cbc-encrypt-decrypt-example</br>
+
 Android Unable to create EC KeyPair (Key Generator 에서 참고)</br>
 https://stackoverflow.com/questions/43671748/android-unable-to-create-ec-keypair</br>
 

@@ -71,7 +71,7 @@ class AESUtils {
     }
 
     //common
-    private fun hashToKey(sharedSecretKeyHash : ByteArray): Key {
-        return SecretKeySpec(sharedSecretKeyHash, KEY_ALGORITHM)
+    private fun hashToKey(sharedSecretHash : ByteArray): Key {
+        return SecretKeySpec(sharedSecretHash, KEY_ALGORITHM)
     }
 }
