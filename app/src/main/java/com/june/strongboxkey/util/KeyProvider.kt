@@ -4,7 +4,6 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import com.june.strongboxkey.constant.Constants.CURVE_TYPE
 import com.june.strongboxkey.constant.Constants.KEYSTORE_MY_KEYPAIR_ALIAS
-import com.june.strongboxkey.constant.Constants.KEYSTORE_SECRET_KEY_ALIAS
 import com.june.strongboxkey.constant.Constants.KEYSTORE_TYPE
 import com.june.strongboxkey.constant.Constants.KEY_AGREEMENT_ALGORITHM
 import com.june.strongboxkey.constant.Constants.KEY_GEN_ALGORITHM
@@ -15,20 +14,22 @@ import java.security.spec.ECGenParameterSpec
 import javax.crypto.KeyAgreement
 
 class KeyProvider {
-    fun keyPair(): KeyPairModel {
+    fun createKeyPair(): KeyPairModel {
         val keyPairGenerator = KeyPairGenerator.getInstance(KEY_GEN_ALGORITHM) //EC
         keyPairGenerator.initialize(ECGenParameterSpec(CURVE_TYPE)) //secp256r1
         val keyPair = keyPairGenerator.generateKeyPair()
         return KeyPairModel(keyPair.private, keyPair.public)
     }
 
-    fun sharedSecretHash(myPrivateKey: PrivateKey, counterpartPublicKey: PublicKey): ByteArray {
+    fun createSharedSecretHash(
+        myPrivateKey: PrivateKey,
+        counterpartPublicKey: PublicKey
+    ): ByteArray {
         val keyAgreement = KeyAgreement.getInstance(KEY_AGREEMENT_ALGORITHM) //ECDH
         keyAgreement.init(myPrivateKey)
         keyAgreement.doPhase(counterpartPublicKey, true)
         val sharedSecret: ByteArray = keyAgreement.generateSecret()
-        val sharedSecretHash = hashSHA256(sharedSecret)
-        return sharedSecretHash
+        return hashSHA256(sharedSecret)
     }
 
     private fun hashSHA256(key: ByteArray): ByteArray {
@@ -36,7 +37,7 @@ class KeyProvider {
         try {
             val messageDigest = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM) //SHA-256
             messageDigest.update(key)
-            hash = messageDigest.digest(randomByteArrayGenerator())
+            hash = messageDigest.digest(getRandomNumbers())
         }
         catch (e: CloneNotSupportedException) {
             throw DigestException("$e")
@@ -44,7 +45,7 @@ class KeyProvider {
         return hash
     }
 
-    private fun randomByteArrayGenerator(): ByteArray {
+    private fun getRandomNumbers(): ByteArray {
         val randomByteArray = ByteArray(32)
         SecureRandom().nextBytes(randomByteArray)
         return randomByteArray
@@ -72,7 +73,7 @@ class KeyProvider {
         keyPairGenerator.generateKeyPair()
     }
 
-    fun keyStoreKeyPair(): KeyPairModel? {
+    fun getKeyPairFromKeyStore(): KeyPairModel {
         val keyStoreEntry = keyStore.getEntry(KEYSTORE_MY_KEYPAIR_ALIAS, null)
         val privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
         val publicKey = keyStore.getCertificate(KEYSTORE_MY_KEYPAIR_ALIAS).publicKey

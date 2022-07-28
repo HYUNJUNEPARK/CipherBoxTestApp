@@ -21,11 +21,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun keyGenButtonClicked(v: View) {
-        keyPairA = KeyProvider().keyPair() //sender
-        keyPairB = KeyProvider().keyPair() //recipient
+        keyPairA = KeyProvider().createKeyPair() //sender
+        keyPairB = KeyProvider().createKeyPair() //recipient
 
         if (keyPairA != null && keyPairB != null) {
-            sharedSecretHash = KeyProvider().sharedSecretHash(keyPairA!!.privateKey, keyPairB!!.publicKey)
+            sharedSecretHash = KeyProvider().createSharedSecretHash(keyPairA!!.privateKey, keyPairB!!.publicKey)
         }
         else {
             Toast.makeText(this, "Shared Secret Key 생성 실패", Toast.LENGTH_SHORT).show()

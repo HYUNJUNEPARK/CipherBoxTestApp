@@ -17,7 +17,7 @@ class AESUtils {
     //ECB Mode
     fun encryptionECBMode(userInputData: String, hash: ByteArray): String {
         val userInputData: ByteArray = userInputData.toByteArray()
-        val key: Key = hashToKey(hash)
+        val key: Key = convertHashToKey(hash)
         val cipher = Cipher.getInstance(CIPHER_ECB_ALGORITHM) //AES/ECB/PKCS5Padding
         cipher.init(
             Cipher.ENCRYPT_MODE,
@@ -29,7 +29,7 @@ class AESUtils {
     }
 
     fun decryptionECBMode(encryptedData: String, hash: ByteArray): String {
-        val key: Key = hashToKey(hash)
+        val key: Key = convertHashToKey(hash)
         val cipher = Cipher.getInstance(CIPHER_ECB_ALGORITHM) //AES/ECB/PKCS5Padding
         cipher.init(
             Cipher.DECRYPT_MODE,
@@ -42,7 +42,7 @@ class AESUtils {
 
     //CBC Mode
     fun encryptionCBCMode(userInputData: String, hash: ByteArray): String {
-        val key: Key = hashToKey(hash)
+        val key: Key = convertHashToKey(hash)
         val userInputData: ByteArray = userInputData.toByteArray()
         val cipher = Cipher.getInstance(CIPHER_CBC_ALGORITHM) //AES/CBC/PKCS7Padding
 
@@ -58,7 +58,7 @@ class AESUtils {
     }
 
     fun decryptionCBCMode(encryptedData: String, hash: ByteArray): String {
-        val key: Key = hashToKey(hash)
+        val key: Key = convertHashToKey(hash)
         val cipher = Cipher.getInstance(CIPHER_CBC_ALGORITHM) //AES/CBC/PKCS7Padding
         cipher.init(
             Cipher.DECRYPT_MODE,
@@ -71,7 +71,7 @@ class AESUtils {
     }
 
     //common
-    private fun hashToKey(sharedSecretHash : ByteArray): Key {
+    private fun convertHashToKey(sharedSecretHash : ByteArray): Key {
         return SecretKeySpec(sharedSecretHash, KEY_ALGORITHM)
     }
 }
