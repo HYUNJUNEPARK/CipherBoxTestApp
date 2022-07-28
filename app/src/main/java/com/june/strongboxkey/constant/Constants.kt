@@ -1,6 +1,8 @@
 package com.june.strongboxkey.constant
 
 object Constants {
+    var iv: ByteArray? = ByteArray(16)
+
     const val CURVE_TYPE = "secp256r1"
     const val KEY_ALGORITHM = "AES"
     const val KEY_GEN_ALGORITHM = "EC"
@@ -11,6 +13,5 @@ object Constants {
 
     const val KEYSTORE_MY_KEYPAIR_ALIAS = "mKey"
     const val KEYSTORE_SECRET_KEY_ALIAS = "ssk"
-
     const val KEYSTORE_TYPE = "AndroidKeyStore"
 }

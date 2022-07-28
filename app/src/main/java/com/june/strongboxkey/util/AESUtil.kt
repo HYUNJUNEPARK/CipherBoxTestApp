@@ -4,16 +4,13 @@ import android.util.Base64
 import com.june.strongboxkey.constant.Constants.CIPHER_CBC_ALGORITHM
 import com.june.strongboxkey.constant.Constants.CIPHER_ECB_ALGORITHM
 import com.june.strongboxkey.constant.Constants.KEY_ALGORITHM
+import com.june.strongboxkey.constant.Constants.iv
 import java.security.Key
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-class AESUtils {
-    companion object {
-        var iv: ByteArray? = ByteArray(16)
-    }
-
+class AESUtil {
     //ECB Mode
     fun encryptionECBMode(userInputData: String, hash: ByteArray): String {
         val userInputData: ByteArray = userInputData.toByteArray()

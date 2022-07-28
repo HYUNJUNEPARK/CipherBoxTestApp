@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.june.strongboxkey.databinding.ActivityMainBinding
 import com.june.strongboxkey.model.KeyPairModel
-import com.june.strongboxkey.util.AESUtils
+import com.june.strongboxkey.util.AESUtil
 import com.june.strongboxkey.util.KeyProvider
 
 class MainActivity : AppCompatActivity() {
@@ -42,15 +42,15 @@ class MainActivity : AppCompatActivity() {
         userMessageTextView.text = userInput
 
         //ECB
-        val encryptionECB = AESUtils().encryptionECBMode(userInput, sharedSecretHash!!)
+        val encryptionECB = AESUtil().encryptionECBMode(userInput, sharedSecretHash!!)
         binding.encryptionECBTextView.text = encryptionECB
-        val decryptionECB = AESUtils().decryptionECBMode(encryptionECB, sharedSecretHash!!)
+        val decryptionECB = AESUtil().decryptionECBMode(encryptionECB, sharedSecretHash!!)
         binding.decryptionECBTextView.text = decryptionECB
 
         //CBC
-        val encryptionCBC = AESUtils().encryptionCBCMode(userInput, sharedSecretHash!!)
+        val encryptionCBC = AESUtil().encryptionCBCMode(userInput, sharedSecretHash!!)
         binding.encryptionCBCTextView.text = encryptionCBC
-        val decryptionCBC = AESUtils().decryptionCBCMode(encryptionCBC, sharedSecretHash!!)
+        val decryptionCBC = AESUtil().decryptionCBCMode(encryptionCBC, sharedSecretHash!!)
         binding.decryptionCBCTextView.text = decryptionCBC
 
         messageEditText.text = null
