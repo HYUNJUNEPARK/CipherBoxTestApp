@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.june.strongboxkey.databinding.ActivityMainBinding
-import com.june.strongboxkey.model.KeyPairModel
-import com.june.strongboxkey.util.AESUtil
-import com.june.strongboxkey.util.KeyProvider
+import com.june.strongboxkey.strongBox.KeyPairModel
+import com.june.strongboxkey.strongBox.AESUtil
+import com.june.strongboxkey.strongBox.KeyProvider
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -25,7 +25,11 @@ class MainActivity : AppCompatActivity() {
         keyPairB = KeyProvider().createKeyPair() //recipient
 
         if (keyPairA != null && keyPairB != null) {
-            sharedSecretHash = KeyProvider().createSharedSecretHash(keyPairA!!.privateKey, keyPairB!!.publicKey)
+            sharedSecretHash = KeyProvider().createSharedSecretHash(
+                keyPairA!!.privateKey,
+                keyPairB!!.publicKey,
+                KeyProvider().getRandomNumbers()
+            )
         }
         else {
             Toast.makeText(this, "Shared Secret Key 생성 실패", Toast.LENGTH_SHORT).show()
@@ -43,15 +47,15 @@ class MainActivity : AppCompatActivity() {
 
         //ECB
         val encryptionECB = AESUtil().encryptionECBMode(userInput, sharedSecretHash!!)
-        binding.encryptionECBTextView.text = encryptionECB
+        encryptionECBTextView.text = encryptionECB
         val decryptionECB = AESUtil().decryptionECBMode(encryptionECB, sharedSecretHash!!)
-        binding.decryptionECBTextView.text = decryptionECB
+        decryptionECBTextView.text = decryptionECB
 
         //CBC
         val encryptionCBC = AESUtil().encryptionCBCMode(userInput, sharedSecretHash!!)
-        binding.encryptionCBCTextView.text = encryptionCBC
+        encryptionCBCTextView.text = encryptionCBC
         val decryptionCBC = AESUtil().decryptionCBCMode(encryptionCBC, sharedSecretHash!!)
-        binding.decryptionCBCTextView.text = decryptionCBC
+        decryptionCBCTextView.text = decryptionCBC
 
         messageEditText.text = null
     }
