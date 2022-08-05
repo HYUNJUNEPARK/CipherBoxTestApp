@@ -1,4 +1,4 @@
-package com.june.strongboxkey.strongBox
+package com.june.strongboxkey.strongBox.keystore
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -6,6 +6,7 @@ import android.util.Log
 import com.june.strongboxkey.strongBox.StrongBoxConstants.CURVE_TYPE
 import com.june.strongboxkey.strongBox.StrongBoxConstants.KEYSTORE_TYPE
 import com.june.strongboxkey.strongBox.StrongBoxConstants.TAG
+import com.june.strongboxkey.strongBox.model.KeyPairModel
 import java.math.BigInteger
 import java.security.*
 import java.security.spec.*

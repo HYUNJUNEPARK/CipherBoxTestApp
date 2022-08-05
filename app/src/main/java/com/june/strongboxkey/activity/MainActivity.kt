@@ -5,9 +5,10 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.june.strongboxkey.databinding.ActivityMainBinding
-import com.june.strongboxkey.strongBox.KeyPairModel
-import com.june.strongboxkey.strongBox.AESUtil
+import com.june.strongboxkey.strongBox.model.KeyPairModel
 import com.june.strongboxkey.strongBox.KeyProvider
+import com.june.strongboxkey.strongBox.aes.AESDecryption
+import com.june.strongboxkey.strongBox.aes.AESEncryption
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -46,17 +47,16 @@ class MainActivity : AppCompatActivity() {
         userMessageTextView.text = userInput
 
         //ECB
-        val encryptionECB = AESUtil().encryptionECBMode(userInput, sharedSecretHash!!)
+        val encryptionECB = AESEncryption().encryptionECBMode(userInput, sharedSecretHash!!)
         encryptionECBTextView.text = encryptionECB
-        val decryptionECB = AESUtil().decryptionECBMode(encryptionECB, sharedSecretHash!!)
+        val decryptionECB = AESDecryption().decryptionECBMode(encryptionECB, sharedSecretHash!!)
         decryptionECBTextView.text = decryptionECB
 
         //CBC
-        val encryptionCBC = AESUtil().encryptionCBCMode(userInput, sharedSecretHash!!)
+        val encryptionCBC = AESEncryption().encryptionCBCMode(userInput, sharedSecretHash!!)
         encryptionCBCTextView.text = encryptionCBC
-        val decryptionCBC = AESUtil().decryptionCBCMode(encryptionCBC, sharedSecretHash!!)
+        val decryptionCBC = AESDecryption().decryptionCBCMode(encryptionCBC, sharedSecretHash!!)
         decryptionCBCTextView.text = decryptionCBC
-
         messageEditText.text = null
     }
 
