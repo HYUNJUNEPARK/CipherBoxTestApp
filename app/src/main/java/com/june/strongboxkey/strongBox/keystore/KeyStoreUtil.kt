@@ -15,12 +15,8 @@ class KeyStoreUtil {
 /*
 How to import and export AES secret key to Android KeyStore
 https://stackoverflow.com/questions/70159590/how-to-import-and-export-aes-secret-key-to-android-keystore -> 같은 상황, 답이 없음
-
 https://stackoverflow.com/questions/39249856/import-encrypted-aes-key-into-android-keystore-and-store-it-under-new-alias
-
-
 */
-
 
     private val keyStore = KeyStore.getInstance(KEYSTORE_TYPE).apply {
         load(null)
@@ -51,12 +47,13 @@ https://stackoverflow.com/questions/39249856/import-encrypted-aes-key-into-andro
     }
 
 //[START Create Key]
-    fun createKeyPairToKeyStore(keyStoreAlias: String) {
+    //TODO Error keyAgreement.init(myPrivateKey) -> USE Android 12, API 31 Device if not InvalidKeyException: Keystore operation failed
+    fun createKeyPairInKeyStore(keyStoreAlias: String) {
         val keyPairGenerator = KeyPairGenerator.getInstance(
             KeyProperties.KEY_ALGORITHM_EC,
             KEYSTORE_TYPE
         )
-        //TODO Error keyAgreement.init(myPrivateKey) -> USE Android 12, API 31 Device if not InvalidKeyException: Keystore operation failed
+
         val parameterSpec = KeyGenParameterSpec.Builder(
             keyStoreAlias,
             KeyProperties.PURPOSE_ENCRYPT or
@@ -77,7 +74,7 @@ https://stackoverflow.com/questions/39249856/import-encrypted-aes-key-into-andro
         val keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC)
         return keyFactory.generatePublic(keySpec)
     }
-//[START Create Key]
+//[END Create Key]
 
 //[START Get Key]
     fun getKeyPairFromKeyStore(keyStoreAlias: String): KeyPairModel {
@@ -97,7 +94,7 @@ https://stackoverflow.com/questions/39249856/import-encrypted-aes-key-into-andro
     }
 //[END Get Key]
 
-//[Delete Key]
+//[START Delete Key]
     fun deleteKeyStoreKeyPair(keyStoreAlias: String) {
         try {
             keyStore.deleteEntry(keyStoreAlias)
@@ -107,5 +104,5 @@ https://stackoverflow.com/questions/39249856/import-encrypted-aes-key-into-andro
             throw Exception("keystore key is deleted failed $e")
         }
     }
-//[Delete Key]
+//[END Delete Key]
 }

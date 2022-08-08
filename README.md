@@ -80,3 +80,7 @@ https://www.techiedelight.com/base64-encoding-and-decoding-in-kotlin/</br>
 
 AES 암호화 모듈 및 ECB/CBC Mode 차이점</br>
 https://linuxforge.tistory.com/191</br>
+
+How to store secret key in keystore and retrieve</br>
+https://stackoverflow.com/questions/24231213/how-to-store-secretkey-in-keystore-and-retrieve-it</br>
+
