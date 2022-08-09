@@ -12,12 +12,6 @@ import java.security.*
 import java.security.spec.*
 
 class KeyStoreUtil {
-/*
-How to import and export AES secret key to Android KeyStore
-https://stackoverflow.com/questions/70159590/how-to-import-and-export-aes-secret-key-to-android-keystore -> 같은 상황, 답이 없음
-https://stackoverflow.com/questions/39249856/import-encrypted-aes-key-into-android-keystore-and-store-it-under-new-alias
-*/
-
     private val keyStore = KeyStore.getInstance(KEYSTORE_TYPE).apply {
         load(null)
     }

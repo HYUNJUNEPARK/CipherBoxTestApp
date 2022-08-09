@@ -8,4 +8,5 @@ object StrongBoxConstants {
     const val CIPHER_AES_CBC_PADDING = "AES/CBC/PKCS7Padding"
     const val KEY_AGREEMENT_ALGORITHM_ECDH = "ECDH"
     const val KEYSTORE_TYPE = "AndroidKeyStore"
+    const val KEYSTORE_FILE_FOR_SHARED_KEY = "keystore_shared_key"
 }

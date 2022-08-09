@@ -15,16 +15,6 @@ class AESDecryption {
             KeyProperties.KEY_ALGORITHM_AES
         )
 
-        //TEST
-
-
-
-        //TEST
-
-
-
-
-
         val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
         cipher.init(
             Cipher.DECRYPT_MODE,

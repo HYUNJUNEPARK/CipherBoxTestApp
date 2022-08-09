@@ -198,51 +198,7 @@
             android:layout_marginTop="7dp"
             android:layout_marginBottom="7dp"
             android:background="#989393" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="암호화 메시지 [ECB]  :  "
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/encryptionECBTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Encryption message" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="7dp"
-            android:background="#989393" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="복호화 메시지 [ECB] :  "
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/decryptionECBTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Decryption message" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="#4812AD" />
-
-
 <!--        -->
-
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -284,6 +240,19 @@
             android:layout_marginBottom="7dp"
             android:background="#989393" />
 
+        <Button
+            android:id="@+id/testButton1"
+            android:text="button1"
+            android:onClick="test1ButtonClicked"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/testButton2"
+            android:text="button2"
+            android:onClick="test2ButtonClicked"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 
