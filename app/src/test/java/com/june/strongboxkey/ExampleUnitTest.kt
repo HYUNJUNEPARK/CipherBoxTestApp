@@ -1,5 +1,7 @@
 package com.june.strongboxkey
 
+import com.june.strongboxkey.legacy.AESUtils_java
+import com.june.strongboxkey.strongbox.KeyProvider
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -14,4 +16,13 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         assertEquals(4, 2 + 2)
     }
+
+//    @Test
+//    fun test_getString() {
+//        assertEquals("Hello Kotlin!", KeyProvider().getString())
+//
+//
+//    }
+
+
 }

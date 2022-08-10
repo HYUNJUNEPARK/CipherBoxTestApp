@@ -1,9 +1,9 @@
-package com.june.strongboxkey.strongBox
+package com.june.strongboxkey.strongbox
 
 import android.security.keystore.KeyProperties
-import com.june.strongboxkey.strongBox.StrongBoxConstants.CURVE_TYPE
-import com.june.strongboxkey.strongBox.StrongBoxConstants.KEY_AGREEMENT_ALGORITHM_ECDH
-import com.june.strongboxkey.strongBox.model.KeyPairModel
+import com.june.strongboxkey.strongbox.StrongBoxConstants.CURVE_TYPE
+import com.june.strongboxkey.strongbox.StrongBoxConstants.KEY_AGREEMENT_ALGORITHM_ECDH
+import com.june.strongboxkey.model.KeyPairModel
 import java.security.*
 import java.security.spec.ECGenParameterSpec
 import javax.crypto.KeyAgreement

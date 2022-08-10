@@ -2,19 +2,15 @@ package com.june.strongboxkey.activity
 
 import android.os.Bundle
 import android.security.keystore.KeyProperties
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.june.strongboxkey.databinding.ActivityMainBinding
-import com.june.strongboxkey.strongBox.KeyProvider
-import com.june.strongboxkey.strongBox.StrongBoxConstants.TAG
-import com.june.strongboxkey.strongBox.aes.AESDecryption
-import com.june.strongboxkey.strongBox.aes.AESEncryption
-import com.june.strongboxkey.strongBox.keystore.StoreInFile
-import com.june.strongboxkey.strongBox.model.KeyPairModel
+import com.june.strongboxkey.strongbox.KeyProvider
+import com.june.strongboxkey.strongbox.AES
+import com.june.strongboxkey.strongbox.keystore.StoreInFile
+import com.june.strongboxkey.model.KeyPairModel
 import java.security.Key
-import java.security.KeyStore
 import javax.crypto.spec.SecretKeySpec
 
 class MainActivity : AppCompatActivity() {
@@ -26,10 +22,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        Log.d(TAG, "onCreate: ${KeyStore.getDefaultType()}")
-//        StoreFile(this).isKeyStoreFile("KeyStore1", "key1")
-//        StoreFile(this).isKeyStoreFile("KeyStore1", "key2")
     }
 
     fun keyGenButtonClicked(v: View) {
@@ -56,9 +48,9 @@ class MainActivity : AppCompatActivity() {
         }
         val userInput = messageEditText.text.toString()
         userMessageTextView.text = userInput
-        val encryptionCBC = AESEncryption().encryptionCBCMode(userInput, sharedSecretHash!!)
+        val encryptionCBC = AES().encryptMessage(userInput, sharedSecretHash!!)
         encryptionCBCTextView.text = encryptionCBC
-        val decryptionCBC = AESDecryption().decryptionCBCMode(encryptionCBC, sharedSecretHash!!)
+        val decryptionCBC = AES().decryptMessage(encryptionCBC, sharedSecretHash!!)
         decryptionCBCTextView.text = decryptionCBC
         messageEditText.text = null
     }
@@ -75,8 +67,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     fun test1ButtonClicked(v: View) {
         Toast.makeText(this, "1111", Toast.LENGTH_SHORT).show()
 
@@ -84,22 +74,13 @@ class MainActivity : AppCompatActivity() {
             sharedSecretHash,
             KeyProperties.KEY_ALGORITHM_AES
         )
-
-        StoreInFile(this).storeKeystoreInFile( "key1", key)
-
+        StoreInFile(this).storeKeystoreInFile( "key2", key)
     }
 
 
 
     fun test2ButtonClicked(v: View) {
-//        StoreInFile(this).isKeyStoreFile("KeyStore1", "key1")
-//        StoreInFile(this).isKeyStoreFile("KeyStore1", "key2")
-
-        StoreInFile(this).readAllKeysInFile()
-//        StoreInFile(this).readAllKeysInFile("KeyStore2")
+        println(StoreInFile(this).readAllKeysInFile())
     }
-
-
-
 
 }
