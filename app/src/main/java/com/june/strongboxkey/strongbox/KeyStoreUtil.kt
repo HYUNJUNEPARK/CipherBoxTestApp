@@ -12,6 +12,61 @@ class KeyStoreUtil {
         load(null)
     }
 
+//[START Create Key]
+    //TODO Error keyAgreement.init(myPrivateKey) -> USE Android 12, API 31 Device if not InvalidKeyException: Keystore operation failed
+    fun generateKeyPair(keyStoreAlias: String) {
+        val keyPairGenerator = KeyPairGenerator.getInstance(
+            KeyProperties.KEY_ALGORITHM_EC,
+            "AndroidKeyStore"
+        )
+
+        val parameterSpec = KeyGenParameterSpec.Builder(
+            keyStoreAlias,
+            KeyProperties.PURPOSE_ENCRYPT or
+                    KeyProperties.PURPOSE_DECRYPT or
+                    KeyProperties.PURPOSE_AGREE_KEY //Field requires API level 31 (current min is 23)
+        ).run {
+            setUserAuthenticationRequired(false)
+            ECGenParameterSpec("secp256r1") //curve type
+            build()
+        }
+        keyPairGenerator.initialize(parameterSpec)
+        keyPairGenerator.generateKeyPair()
+    }
+
+    fun generatePublicKeyByECPoint(affineX: BigInteger, affineY: BigInteger): PublicKey {
+        val ecPoint = ECPoint(affineX, affineY)
+        val keySpec = ECPublicKeySpec(ecPoint, ecParameterSpec())
+        val keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC)
+        return keyFactory.generatePublic(keySpec)
+    }
+//[END Create Key]
+
+//[START Get Key]
+    fun getPublicKeyFromKeyStore(keyStoreAlias: String): PublicKey? {
+        return keyStore.getCertificate(keyStoreAlias).publicKey
+    }
+
+    fun getPrivateKeyFromKeyStore(keyStoreAlias: String): PrivateKey? {
+        val keyStoreEntry = keyStore.getEntry(keyStoreAlias, null)
+        return (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
+    }
+
+
+//[END Get Key]
+
+//[START Delete Key]
+    fun deleteKeyStoreKeyPair(keyStoreAlias: String) {
+        try {
+            keyStore.deleteEntry(keyStoreAlias)
+        }
+        catch (e: Exception) {
+            throw Exception("keystore key is deleted failed $e")
+        }
+    }
+//[END Delete Key]
+
+
     fun isKeyInKeyStore(keyStoreAlias: String): Boolean {
         return keyStore.containsAlias(keyStoreAlias)
     }
@@ -35,63 +90,4 @@ class KeyStoreUtil {
         val g = ECPoint(gX, gY)
         return ECParameterSpec(curve, g, n, h)
     }
-
-//[START Create Key]
-    //TODO Error keyAgreement.init(myPrivateKey) -> USE Android 12, API 31 Device if not InvalidKeyException: Keystore operation failed
-    fun createKeyPairInKeyStore(keyStoreAlias: String) {
-        val keyPairGenerator = KeyPairGenerator.getInstance(
-            KeyProperties.KEY_ALGORITHM_EC,
-            "AndroidKeyStore"
-        )
-
-        val parameterSpec = KeyGenParameterSpec.Builder(
-            keyStoreAlias,
-            KeyProperties.PURPOSE_ENCRYPT or
-                    KeyProperties.PURPOSE_DECRYPT or
-                    KeyProperties.PURPOSE_AGREE_KEY //Field requires API level 31 (current min is 23)
-        ).run {
-            setUserAuthenticationRequired(false)
-            ECGenParameterSpec("secp256r1") //curve type
-            build()
-        }
-        keyPairGenerator.initialize(parameterSpec)
-        keyPairGenerator.generateKeyPair()
-    }
-
-    fun createPublicKeyByECPoint(affineX: BigInteger, affineY: BigInteger): PublicKey {
-        val ecPoint = ECPoint(affineX, affineY)
-        val keySpec = ECPublicKeySpec(ecPoint, ecParameterSpec())
-        val keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC)
-        return keyFactory.generatePublic(keySpec)
-    }
-//[END Create Key]
-
-//[START Get Key]
-    fun getKeyPairFromKeyStore(keyStoreAlias: String): KeyPairModel {
-        val keyStoreEntry = keyStore.getEntry(keyStoreAlias, null)
-        val privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
-        val publicKey = keyStore.getCertificate(keyStoreAlias).publicKey
-        return KeyPairModel(privateKey, publicKey)
-    }
-
-    fun getPublicKeyFromKeyStore(keyStoreAlias: String): PublicKey? {
-        return keyStore.getCertificate(keyStoreAlias).publicKey
-    }
-
-    fun getPrivateKeyFromKeyStore(keyStoreAlias: String): PrivateKey? {
-        val keyStoreEntry = keyStore.getEntry(keyStoreAlias, null)
-        return (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
-    }
-//[END Get Key]
-
-//[START Delete Key]
-    fun deleteKeyStoreKeyPair(keyStoreAlias: String) {
-        try {
-            keyStore.deleteEntry(keyStoreAlias)
-        }
-        catch (e: Exception) {
-            throw Exception("keystore key is deleted failed $e")
-        }
-    }
-//[END Delete Key]
 }

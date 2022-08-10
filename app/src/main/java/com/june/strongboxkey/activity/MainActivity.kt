@@ -10,6 +10,7 @@ import com.june.strongboxkey.strongbox.KeyProvider
 import com.june.strongboxkey.strongbox.AES
 import com.june.strongboxkey.strongbox.StoreInFile
 import com.june.strongboxkey.model.KeyPairModel
+import com.june.strongboxkey.strongbox.Test
 import java.security.Key
 import javax.crypto.spec.SecretKeySpec
 
@@ -25,11 +26,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun keyGenButtonClicked(v: View) {
-        keyPairA = KeyProvider().createKeyPair() //sender
-        keyPairB = KeyProvider().createKeyPair() //recipient
+        keyPairA = Test().createKeyPair() //sender
+        keyPairB = Test().createKeyPair() //recipient
 
         if (keyPairA != null && keyPairB != null) {
-            sharedSecretHash = KeyProvider().createSharedSecretHash(
+
+            sharedSecretHash = KeyProvider().generateSharedSecret(
                 keyPairA!!.privateKey,
                 keyPairB!!.publicKey,
                 KeyProvider().getRandomNumbers()
