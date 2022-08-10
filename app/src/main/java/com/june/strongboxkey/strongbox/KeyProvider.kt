@@ -1,8 +1,6 @@
 package com.june.strongboxkey.strongbox
 
 import android.security.keystore.KeyProperties
-import com.june.strongboxkey.strongbox.StrongBoxConstants.CURVE_TYPE
-import com.june.strongboxkey.strongbox.StrongBoxConstants.KEY_AGREEMENT_ALGORITHM_ECDH
 import com.june.strongboxkey.model.KeyPairModel
 import java.security.*
 import java.security.spec.ECGenParameterSpec
@@ -11,7 +9,7 @@ import javax.crypto.KeyAgreement
 class KeyProvider {
     fun createKeyPair(): KeyPairModel {
         val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_EC).apply {
-            initialize(ECGenParameterSpec(CURVE_TYPE)) //secp256r1
+            initialize(ECGenParameterSpec("secp256r1")) //curve type
         }
         val keyPair = keyPairGenerator.generateKeyPair()
         return KeyPairModel(keyPair.private, keyPair.public)
@@ -21,7 +19,7 @@ class KeyProvider {
     fun createSharedSecretHash(myPrivateKey: PrivateKey, partnerPublicKey: PublicKey, randomNumber: ByteArray): ByteArray {
         val sharedSecret: ByteArray
         try {
-            val keyAgreement = KeyAgreement.getInstance(KEY_AGREEMENT_ALGORITHM_ECDH).apply {
+            val keyAgreement = KeyAgreement.getInstance("ECDH").apply {
                 init(myPrivateKey)
                 doPhase(partnerPublicKey, true)
             }
@@ -30,7 +28,17 @@ class KeyProvider {
         catch (e : Exception) {
             throw KeyException("$e")
         }
+
+
+
+
+
         return hashSHA256(sharedSecret, randomNumber)
+
+
+
+
+
     }
 
     private fun hashSHA256(key: ByteArray, randomNumber: ByteArray): ByteArray {

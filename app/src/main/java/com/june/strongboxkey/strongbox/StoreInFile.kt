@@ -1,7 +1,6 @@
-package com.june.strongboxkey.strongbox.keystore
+package com.june.strongboxkey.strongbox
 
 import android.content.Context
-import com.june.strongboxkey.strongbox.StrongBoxConstants.KEYSTORE_FILE_FOR_SHARED_KEY
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.security.Key
@@ -9,9 +8,9 @@ import java.security.KeyStore
 
 class StoreInFile(private val context: Context) {
 //https://stackoverflow.com/questions/24231213/how-to-store-secretkey-in-keystore-and-retrieve-it
-
-    private val storePasswd = "storePassword".toCharArray()
-    private val keyPasswd = "keyPassword".toCharArray()
+    private val KEYSTORE_FILE_FOR_SHARED_KEY = "keystore_shared_key"
+    private val storePassword = "storePassword".toCharArray()
+    private val keyPassword = "keyPassword".toCharArray()
     private val keyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply {
         var fis: FileInputStream? = null
         try {
@@ -20,13 +19,13 @@ class StoreInFile(private val context: Context) {
         catch (e: Exception){
             load(null)
         }
-        load(fis, storePasswd)
+        load(fis, storePassword)
     }
 
     fun storeKeystoreInFile(keyAlias: String, key: Key) {
-        keyStore.setKeyEntry(keyAlias, key, keyPasswd, null)
+        keyStore.setKeyEntry(keyAlias, key, keyPassword, null)
         val ksOut: FileOutputStream = context.openFileOutput(KEYSTORE_FILE_FOR_SHARED_KEY, Context.MODE_PRIVATE)
-        keyStore.store(ksOut, storePasswd)
+        keyStore.store(ksOut, storePassword)
         ksOut.close()
     }
 
@@ -38,9 +37,9 @@ class StoreInFile(private val context: Context) {
         catch (e: Exception){
             e.printStackTrace()
         }
-        keyStore.load(fis, storePasswd)
+        keyStore.load(fis, storePassword)
         fis?.close()
-        return keyStore.getKey(keyAlias, keyPasswd)
+        return keyStore.getKey(keyAlias, keyPassword)
     }
 
     fun isKeyStoreFile(keyAlias: String): Boolean {
@@ -53,9 +52,9 @@ class StoreInFile(private val context: Context) {
             e.printStackTrace()
             return false
         }
-        keyStore.load(fis, storePasswd)
+        keyStore.load(fis, storePassword)
         fis.close()
-        keyStore.getKey(keyAlias, storePasswd).let { key ->
+        keyStore.getKey(keyAlias, storePassword).let { key ->
             return key != null
         }
     }
@@ -67,7 +66,7 @@ class StoreInFile(private val context: Context) {
 
         try {
             fis = context.openFileInput(KEYSTORE_FILE_FOR_SHARED_KEY)
-            keyStore.load(fis, storePasswd)
+            keyStore.load(fis, storePassword)
             fis?.close()
             for (key in keyStore.aliases()) {
                 sb.append(key + "\n")
@@ -100,10 +99,6 @@ IOException	if an I/O error occurs.
 
 
 예외 복구 : 예외 상황을 파악하고, 문제를 해결해서 정상적인 상태로 돌려놓는 것
-
-
-
-
 
 
 */

@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.june.strongboxkey.databinding.ActivityMainBinding
 import com.june.strongboxkey.strongbox.KeyProvider
 import com.june.strongboxkey.strongbox.AES
-import com.june.strongboxkey.strongbox.keystore.StoreInFile
+import com.june.strongboxkey.strongbox.StoreInFile
 import com.june.strongboxkey.model.KeyPairModel
 import java.security.Key
 import javax.crypto.spec.SecretKeySpec

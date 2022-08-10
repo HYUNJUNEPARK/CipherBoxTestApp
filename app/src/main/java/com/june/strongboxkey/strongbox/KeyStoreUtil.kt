@@ -1,18 +1,14 @@
-package com.june.strongboxkey.strongbox.keystore
+package com.june.strongboxkey.strongbox
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Log
-import com.june.strongboxkey.strongbox.StrongBoxConstants.CURVE_TYPE
-import com.june.strongboxkey.strongbox.StrongBoxConstants.KEYSTORE_TYPE
-import com.june.strongboxkey.strongbox.StrongBoxConstants.TAG
 import com.june.strongboxkey.model.KeyPairModel
 import java.math.BigInteger
 import java.security.*
 import java.security.spec.*
 
 class KeyStoreUtil {
-    private val keyStore = KeyStore.getInstance(KEYSTORE_TYPE).apply {
+    private val keyStore = KeyStore.getInstance("AndroidKeyStore").apply {
         load(null)
     }
 
@@ -45,7 +41,7 @@ class KeyStoreUtil {
     fun createKeyPairInKeyStore(keyStoreAlias: String) {
         val keyPairGenerator = KeyPairGenerator.getInstance(
             KeyProperties.KEY_ALGORITHM_EC,
-            KEYSTORE_TYPE
+            "AndroidKeyStore"
         )
 
         val parameterSpec = KeyGenParameterSpec.Builder(
@@ -55,7 +51,7 @@ class KeyStoreUtil {
                     KeyProperties.PURPOSE_AGREE_KEY //Field requires API level 31 (current min is 23)
         ).run {
             setUserAuthenticationRequired(false)
-            ECGenParameterSpec(CURVE_TYPE) //secp256r1
+            ECGenParameterSpec("secp256r1") //curve type
             build()
         }
         keyPairGenerator.initialize(parameterSpec)
@@ -92,7 +88,6 @@ class KeyStoreUtil {
     fun deleteKeyStoreKeyPair(keyStoreAlias: String) {
         try {
             keyStore.deleteEntry(keyStoreAlias)
-            Log.i(TAG, "keystore key is deleted")
         }
         catch (e: Exception) {
             throw Exception("keystore key is deleted failed $e")

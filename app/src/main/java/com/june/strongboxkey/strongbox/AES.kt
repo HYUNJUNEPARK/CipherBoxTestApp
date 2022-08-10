@@ -2,13 +2,14 @@ package com.june.strongboxkey.strongbox
 
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import com.june.strongboxkey.strongbox.StrongBoxConstants.iv
 import java.security.Key
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 class AES {
+    private val iv: ByteArray = ByteArray(16)
+
     //CBC
     fun encryptMessage(message: String, hash: ByteArray): String {
         val userMessage: ByteArray = message.toByteArray()
@@ -21,7 +22,7 @@ class AES {
         cipher.init(
             Cipher.ENCRYPT_MODE,
             key,
-            IvParameterSpec(StrongBoxConstants.iv)
+            IvParameterSpec(iv)
         )
         val result: String
         cipher.doFinal(userMessage).let { encryptedMessage ->
