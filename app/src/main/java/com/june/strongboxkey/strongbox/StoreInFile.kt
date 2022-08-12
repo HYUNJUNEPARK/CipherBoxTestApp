@@ -11,6 +11,7 @@ class StoreInFile(private val context: Context) {
     private val KEYSTORE_FILE_FOR_SHARED_KEY = "keystore_shared_key"
     private val storePassword = "storePassword".toCharArray()
     private val keyPassword = "keyPassword".toCharArray()
+
     private val keyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply {
         var fis: FileInputStream? = null
         try {

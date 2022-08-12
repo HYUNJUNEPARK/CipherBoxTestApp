@@ -1,4 +1,4 @@
-package com.june.strongboxkey.model
+package com.june.strongboxkey.app
 
 import java.security.PrivateKey
 import java.security.PublicKey

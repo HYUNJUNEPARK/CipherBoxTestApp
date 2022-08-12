@@ -7,11 +7,11 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-class AES {
+class AESCipher {
     private val iv: ByteArray = ByteArray(16)
 
-    //CBC
-    fun encryptMessage(message: String, hash: ByteArray): String {
+    //TODO hash -> keyId: String
+    fun encrypt(message: String, hash: ByteArray): String {
         val userMessage: ByteArray = message.toByteArray()
         //hash -> key
         val key: Key = SecretKeySpec(
@@ -31,7 +31,7 @@ class AES {
         return result
     }
 
-    fun decryptMessage(encryptedMessage: String, hash: ByteArray): String {
+    fun decrypt(message: String, hash: ByteArray): String {
         //hash -> key
         val key: Key = SecretKeySpec(
             hash,
@@ -44,7 +44,7 @@ class AES {
             IvParameterSpec(iv)
         )
         val result: ByteArray
-        Base64.decode(encryptedMessage, Base64.DEFAULT).let { decryptedMessage ->
+        Base64.decode(message, Base64.DEFAULT).let { decryptedMessage ->
             result = cipher.doFinal(decryptedMessage)
         }
         return String(result)
