@@ -1,12 +1,11 @@
 package com.june.strongboxkey.app
 
 import android.os.Bundle
-import android.util.Base64
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.june.strongboxkey.databinding.ActivityMainBinding
-import com.june.strongboxkey.strongbox.KeyProvider
+import com.june.strongboxkey.strongbox.StrongBox
 import java.security.PublicKey
 
 class MainActivity : AppCompatActivity() {
@@ -16,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 //    private var keyPairB: KeyPairModel? = null
 
     private lateinit var publicKey: PublicKey
-    private val keyProvider = KeyProvider(this)
+    private val strongBox = StrongBox(this)
     private val libTest = LibTest()
     private var nonce: String? = null
 
@@ -27,15 +26,15 @@ class MainActivity : AppCompatActivity() {
 
     fun keyGenButtonClicked(v: View) {
         libTest.generateECKeyPair()
-        keyProvider.generateECKeyPair()
+        strongBox.generateECKeyPair()
 
-        nonce = keyProvider.generateRandom(32)
+        nonce = strongBox.generateRandom(32)
 
         //상대방의 퍼블릭키
         publicKey = libTest.getECPublicKey()!!
 
         //shared secret key 생성
-        keyProvider.generateSharedSecretKey(publicKey, nonce!!)
+        strongBox.generateSharedSecretKey(publicKey, nonce!!)
 
         //상대방 퍼블릭키 가져와서 확인
         if (libTest.getECPublicKey() != null) {
@@ -82,10 +81,11 @@ class MainActivity : AppCompatActivity() {
         val userInput = messageEditText.text.toString()
         userMessageTextView.text = userInput
 
-        val encryption = keyProvider.encrypt(userInput, nonce!!)
+        val encryption = strongBox.encrypt(userInput, nonce!!)
         encryptionCBCTextView.text = encryption
 
-
+        val decryption = strongBox.decrypt(encryption, nonce!!)
+        decryptionCBCTextView.text = decryption
 
 //        val encryptionCBC = AESCiper().encryptMessage(userInput, sharedSecretHash!!)
 //        encryptionCBCTextView.text = encryptionCBC
