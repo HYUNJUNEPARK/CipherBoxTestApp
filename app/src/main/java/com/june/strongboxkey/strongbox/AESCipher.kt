@@ -50,38 +50,19 @@ class AESCipher {
         return String(result)
     }
 
-    //ECB
-    fun encryptMessageECB(userInput: String, hash: ByteArray): String {
-        val input: ByteArray = userInput.toByteArray()
-        val key: Key = SecretKeySpec(
-            hash,
-            KeyProperties.KEY_ALGORITHM_AES
-        )
-        val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-        cipher.init(
-            Cipher.ENCRYPT_MODE,
-            key
-        )
-        val result: String
-        cipher.doFinal(input).let { bytes ->
-            result = Base64.encodeToString(bytes, Base64.DEFAULT)
-        }
-        return result
-    }
 
-    fun decryptMessageECB(encryptedData: String, hash: ByteArray): String {
-        val key: Key = SecretKeySpec(
-            hash,
-            KeyProperties.KEY_ALGORITHM_AES
-        )
+//    fun getKey(keyAlias: String): Key {
+//        var fis: FileInputStream? = null
+//        try {
+//            fis = context.openFileInput(KEYSTORE_FILE_FOR_SHARED_KEY)
+//        }
+//        catch (e: Exception){
+//            e.printStackTrace()
+//        }
+//        keyStore.load(fis, storePassword)
+//        fis?.close()
+//        return keyStore.getKey(keyAlias, keyPassword)
+//    }
 
-        val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-        cipher.init(
-            Cipher.DECRYPT_MODE,
-            key
-        )
-        val decryptedData: ByteArray = Base64.decode(encryptedData, Base64.DEFAULT)
-        val result: ByteArray = cipher.doFinal(decryptedData)
-        return String(result)
-    }
+
 }

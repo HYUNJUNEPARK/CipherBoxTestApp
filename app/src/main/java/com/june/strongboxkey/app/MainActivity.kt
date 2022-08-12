@@ -1,17 +1,13 @@
 package com.june.strongboxkey.app
 
 import android.os.Bundle
-import android.security.keystore.KeyProperties
-import android.util.Log
+import android.util.Base64
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.june.strongboxkey.databinding.ActivityMainBinding
 import com.june.strongboxkey.strongbox.KeyProvider
-import com.june.strongboxkey.strongbox.StoreInFile
-import java.security.Key
 import java.security.PublicKey
-import javax.crypto.spec.SecretKeySpec
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -22,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var publicKey: PublicKey
     private val keyProvider = KeyProvider(this)
     private val libTest = LibTest()
+    private var nonce: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,10 +27,24 @@ class MainActivity : AppCompatActivity() {
 
     fun keyGenButtonClicked(v: View) {
         libTest.generateECKeyPair()
-
         keyProvider.generateECKeyPair()
-        val random = keyProvider.generateRandom(32)
+
+        nonce = keyProvider.generateRandom(32)
+
+        //상대방의 퍼블릭키
         publicKey = libTest.getECPublicKey()!!
+
+        //shared secret key 생성
+        keyProvider.generateSharedSecretKey(publicKey, nonce!!)
+
+        //상대방 퍼블릭키 가져와서 확인
+        if (libTest.getECPublicKey() != null) {
+            Toast.makeText(this, "상대방 퍼블릭키를 가져올 수 있음", Toast.LENGTH_SHORT).show()
+        }
+
+
+
+
 
         //sharedSecretHash = keyProvider.generateSharedSecretKey(publicKey, random)
 //        if (keyPairA != null && keyPairB != null) {
@@ -56,25 +67,35 @@ class MainActivity : AppCompatActivity() {
 
 
     fun messageSendButtonClicked(v: View) = with(binding) {
-        if (publicKey != null) {
-            Log.d("testLog", "public Key set up")
-        }
-
-        if (sharedSecretHash != null) {
-            Log.d("testLog", "shared SecretKey set up")
-        }
+//        if (publicKey != null) {
+//            Log.d("testLog", "public Key set up")
+//        }
+//
+//        if (sharedSecretHash != null) {
+//            Log.d("testLog", "shared SecretKey set up")
+//        }
 
 //        if (keyPairA == null || keyPairB == null || sharedSecretHash == null) {
 //            Toast.makeText(this@MainActivity, "암복호화 키 필요", Toast.LENGTH_SHORT).show()
 //            return@with
 //        }
-//        val userInput = messageEditText.text.toString()
-//        userMessageTextView.text = userInput
+        val userInput = messageEditText.text.toString()
+        userMessageTextView.text = userInput
+
+        val encryption = keyProvider.encrypt(userInput, nonce!!)
+        encryptionCBCTextView.text = encryption
+
+
+
 //        val encryptionCBC = AESCiper().encryptMessage(userInput, sharedSecretHash!!)
 //        encryptionCBCTextView.text = encryptionCBC
+//
+//
 //        val decryptionCBC = AESCiper().decryptMessage(encryptionCBC, sharedSecretHash!!)
 //        decryptionCBCTextView.text = decryptionCBC
-//        messageEditText.text = null
+
+
+        messageEditText.text = null
     }
 
     private fun initKeyPairView() {
@@ -91,20 +112,20 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun test1ButtonClicked(v: View) {
-        Toast.makeText(this, "1111", Toast.LENGTH_SHORT).show()
-
-        val key: Key = SecretKeySpec(
-            sharedSecretHash,
-            KeyProperties.KEY_ALGORITHM_AES
-        )
-        StoreInFile(this).storeKeystoreInFile( "key2", key)
-    }
-
-
-
-    fun test2ButtonClicked(v: View) {
-        println(StoreInFile(this).readAllKeysInFile())
-    }
+//    fun test1ButtonClicked(v: View) {
+//        Toast.makeText(this, "1111", Toast.LENGTH_SHORT).show()
+//
+//        val key: Key = SecretKeySpec(
+//            sharedSecretHash,
+//            KeyProperties.KEY_ALGORITHM_AES
+//        )
+//        StoreInFile(this).storeKeystoreInFile( "key2", key)
+//    }
+//
+//
+//
+//    fun test2ButtonClicked(v: View) {
+//        println(StoreInFile(this).readAllKeysInFile())
+//    }
 
 }
