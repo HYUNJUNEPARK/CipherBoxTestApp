@@ -89,3 +89,6 @@ https://bacassf.tistory.com/59</br>
 
 How to set a ripple effect on textview or imageview on Android?</br>
 https://stackoverflow.com/questions/33477025/how-to-set-a-ripple-effect-on-textview-or-imageview-on-android</br>
+
+SharedPreferences 간단하게 사용하기 (Kotlin)</br>
+https://leveloper.tistory.com/133</br>

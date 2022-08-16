@@ -23,14 +23,13 @@ class MainActivity : AppCompatActivity() {
     private val testUserKeyStoreAlias = "test_androidKeyStoreKey"
     private var publicKey: PublicKey ?= null
 
-    //sharedSecretKey
+    //shared Secret Key
     private val keystoreFile = "default_keystore"
     private val storePassword = "defaultStorePassword".toCharArray()
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
         initKeyState()
     }
 
@@ -53,6 +52,12 @@ class MainActivity : AppCompatActivity() {
         //sdk
         if (androidKeyStore.containsAlias(sdkUserKeyStoreAlias)) {
             sdkUserKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
+//            if (sp!!.getString(spKey, "null") != "null") {
+//                random = sp!!.getString(spKey, "null")
+//            }
+//            else {
+//                Toast.makeText(this@MainActivity, "랜덤을 가져올 수 없음", Toast.LENGTH_SHORT).show()
+//            }
         }
 
         //test
@@ -75,10 +80,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //TODO sp random number
     fun keyGenButtonClicked(v: View) {
         //sdk
         sdkUserStrongBox.generateECKeyPair()
         random = sdkUserStrongBox.generateRandom(32)
+
 
         //test
         testUserStrongBox.generateECKeyPair()

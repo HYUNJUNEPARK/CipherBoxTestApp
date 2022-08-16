@@ -13,7 +13,7 @@ import javax.crypto.KeyAgreement
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-//TODO 예외처리 추가와 단위테스트로 각 메서드의 안정성을 올리는 작업이 반드시 필요함!
+//Strong Box SDK 를 테스트하기 위한 클래스
 
 class StrongBoxTest {
     //싱글톤 패턴

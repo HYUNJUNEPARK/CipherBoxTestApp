@@ -19,6 +19,7 @@ class StrongBox {
     //싱글톤 패턴
     companion object {
         private var instance: StrongBox? = null
+        //TODO context 있어야되는지 생각해보기
         private lateinit var context: Context
 
         fun getInstance(_context: Context): StrongBox {
