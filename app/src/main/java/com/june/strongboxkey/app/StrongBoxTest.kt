@@ -1,4 +1,4 @@
-package com.june.strongboxkey.strongbox
+package com.june.strongboxkey.app
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
@@ -15,15 +15,15 @@ import javax.crypto.spec.SecretKeySpec
 
 //TODO 예외처리 추가와 단위테스트로 각 메서드의 안정성을 올리는 작업이 반드시 필요함!
 
-class StrongBox {
+class StrongBoxTest {
     //싱글톤 패턴
     companion object {
-        private var instance: StrongBox? = null
+        private var instance: StrongBoxTest? = null
         private lateinit var context: Context
 
-        fun getInstance(_context: Context): StrongBox {
+        fun getInstance(_context: Context): StrongBoxTest {
             return instance ?: synchronized(this) {
-                instance ?: StrongBox().also {
+                instance ?: StrongBoxTest().also {
                     context = _context
                     instance = it
                 }
@@ -34,13 +34,13 @@ class StrongBox {
     //CBC(Cipher Block Chaining) Mode 에서 첫번째 암호문 대신 사용되는 IV(Initial Vector)로 0으로 초기화 되어있습니다.
     private val iv: ByteArray = ByteArray(16)
     //기본 유형 키스토어(BKS)를 보관하고 있는 파일 이름으로 해당 파일에는 패스워드가 걸려있습니다.
-    private val keystoreFile = "default_keystore"
+    private val keystoreFile = "test_default_keystore"
     //기본 유형 키스토어(BKS)를 보관하고 있는 파일을 열기 위한 패스워드입니다.
-    private val storePassword = "defaultStorePassword".toCharArray()
+    private val storePassword = "test_defaultStorePassword".toCharArray()
     //기본 유형 키스토어(BKS)에서 보관하고 있는 shared Secret Key 에 접근하기 위한 패스워드입니다.
-    private val keyPassword = "defaultKeyPassword".toCharArray()
+    private val keyPassword = "test_defaultKeyPassword".toCharArray()
     //안드로이드 키스토어(AndroidKeyStore) 에 저장되어있는 EC Key Pair 의 식별자입니다.
-    private val keyAlias = "androidKeyStoreKey"
+    private val keyAlias = "test_androidKeyStoreKey"
     //안드로이드 키스토어(AndroidKeyStore) : 해당 키스토어에는 사용자의 EC Private Key / EC Public Key 가 저장되어 관리됩니다.
     private val androidKeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
         load(null)

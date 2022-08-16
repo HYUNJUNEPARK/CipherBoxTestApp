@@ -58,9 +58,6 @@ class Deprecated {
         return hash
     }
 
-
-
-
     //useless??
     private val androidKeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
         load(null)

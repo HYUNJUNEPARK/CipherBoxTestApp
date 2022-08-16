@@ -84,3 +84,8 @@ https://linuxforge.tistory.com/191</br>
 How to store secret key in keystore and retrieve</br>
 https://stackoverflow.com/questions/24231213/how-to-store-secretkey-in-keystore-and-retrieve-it</br>
 
+코틀린 Singleton Pattern</br>
+https://bacassf.tistory.com/59</br>
+
+How to set a ripple effect on textview or imageview on Android?</br>
+https://stackoverflow.com/questions/33477025/how-to-set-a-ripple-effect-on-textview-or-imageview-on-android</br>

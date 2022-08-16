@@ -11,7 +11,8 @@
         android:id="@+id/keyGenButton"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="#2196F3"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:onClick="keyGenButtonClicked"
         android:src="@drawable/ic_baseline_key_24"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +55,6 @@
                 app:tint="@color/purple_500" />
 
             <ImageView
-                android:id="@+id/publicKeyAText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -64,7 +64,6 @@
                 app:tint="@color/purple_700" />
 
             <ImageView
-                android:id="@+id/privateKeyAText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -74,20 +73,30 @@
                 app:tint="@color/purple_700" />
 
             <TextView
-                android:text="SDK"
-                android:layout_gravity="center"
-                android:textColor="@color/purple_700"
-                android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
-                android:textStyle="bold"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="SDK  "
+                android:textColor="@color/purple_700"
+                android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/userAKeyStateImageView"
-                android:src="@drawable/ic_baseline_cancel_24"
+                android:id="@+id/sdkUserKeyStateImageView"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
-                android:layout_height="wrap_content"/>
+                android:src="@drawable/ic_baseline_cancel_24" />
+
+            <ImageView
+                android:id="@+id/sdkKeyDeleteImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:onClick="sdkKeyDeleteButtonClicked"
+                android:src="@drawable/ic_baseline_delete_forever_24" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -104,7 +113,6 @@
                 app:tint="@color/blue" />
 
             <ImageView
-                android:id="@+id/publicKeyBText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -114,22 +122,38 @@
                 app:tint="@color/blue" />
 
             <ImageView
-                android:id="@+id/privateKeyBText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_baseline_key_off_24"
-                android:text=" [Private Key_B] "
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 app:tint="@color/blue" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:text="TEST"
+                android:textColor="@color/blue"
+                android:textStyle="bold" />
+
             <ImageView
-                android:id="@+id/userBKeyStateImageView"
+                android:id="@+id/testUserKeyStateImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
+
+            <ImageView
+                android:id="@+id/testKeyDeleteImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:onClick="testKeyDeleteButtonClicked"
+                android:src="@drawable/ic_baseline_delete_forever_24" />
         </LinearLayout>
     </LinearLayout>
 
@@ -137,11 +161,13 @@
         android:id="@+id/sharedKeyLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/keyGenText">
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -150,14 +176,19 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/sharedSecretKeyGenImageView"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:onClick="sharedSecretKeyGenButtonClicked"
                 android:src="@drawable/ic_baseline_key_24" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shared Secret Key"
+                android:gravity="center"
+                android:text="Shared \nSecret Key\n Gen"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -214,13 +245,30 @@
                 android:textColor="@color/purple_700"
                 android:textStyle="bold" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/sharedSecretKeyStateImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/ic_baseline_cancel_24" />
+
+        <ImageView
+            android:id="@+id/sharedSecretKeyDeleteImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:onClick="sharedSecretKeyDeleteButtonClicked"
+            android:src="@drawable/ic_baseline_delete_forever_24" />
+
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="20dp"
         android:id="@+id/userInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -318,20 +366,6 @@
             android:layout_marginTop="7dp"
             android:layout_marginBottom="7dp"
             android:background="#989393" />
-
-        <!--        <Button-->
-        <!--            android:id="@+id/testButton1"-->
-        <!--            android:text="button1"-->
-        <!--            android:onClick="test1ButtonClicked"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"/>-->
-
-        <!--        <Button-->
-        <!--            android:id="@+id/testButton2"-->
-        <!--            android:text="button2"-->
-        <!--            android:onClick="test2ButtonClicked"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="match_parent"/>-->
 
     </LinearLayout>
 
