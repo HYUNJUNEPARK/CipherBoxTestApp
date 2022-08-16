@@ -11,10 +11,9 @@ import java.security.PublicKey
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var sharedSecretHash: ByteArray? = null
-//    private var keyPairA: KeyPairModel? = null
-//    private var keyPairB: KeyPairModel? = null
-
     private lateinit var publicKey: PublicKey
+
+
     private val strongBox = StrongBox(this)
     private val libTest = LibTest()
     private var nonce: String? = null
@@ -24,43 +23,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
     }
 
+    fun initKeyState() {
+
+    }
+
     fun keyGenButtonClicked(v: View) {
-        libTest.generateECKeyPair()
-        strongBox.generateECKeyPair()
-
-        nonce = strongBox.generateRandom(32)
-
-        //상대방의 퍼블릭키
-        publicKey = libTest.getECPublicKey()!!
-
-        //shared secret key 생성
-        strongBox.generateSharedSecretKey(publicKey, nonce!!)
-
-        //상대방 퍼블릭키 가져와서 확인
-        if (libTest.getECPublicKey() != null) {
-            Toast.makeText(this, "상대방 퍼블릭키를 가져올 수 있음", Toast.LENGTH_SHORT).show()
-        }
-
-
-
-
-
-        //sharedSecretHash = keyProvider.generateSharedSecretKey(publicKey, random)
-//        if (keyPairA != null && keyPairB != null) {
-//
-//
-////            sharedSecretHash = keyProvider.generateSharedSecretKey(
-////                keyPairB!!.publicKey,
-////                keyProvider.getRandom()
-////            )
-//
-//
-//
+//        libTest.generateECKeyPair()
+//        strongBox.generateECKeyPair()
+//        nonce = strongBox.generateRandom(32)
+//        //상대방의 퍼블릭키
+//        publicKey = libTest.getECPublicKey()!!
+//        //shared secret key 생성
+//        strongBox.generateSharedSecretKey(publicKey, nonce!!)
+//        //상대방 퍼블릭키 가져와서 확인
+//        if (libTest.getECPublicKey() != null) {
+//            Toast.makeText(this, "상대방 퍼블릭키를 가져올 수 있음", Toast.LENGTH_SHORT).show()
 //        }
-//        else {
-//            Toast.makeText(this, "Shared Secret Key 생성 실패", Toast.LENGTH_SHORT).show()
-//        }
-        initKeyPairView()
+//        initKeyPairView()
+
+
     }
 
 
@@ -100,32 +81,5 @@ class MainActivity : AppCompatActivity() {
 
     private fun initKeyPairView() {
 
-//        if (keyPairA?.privateKey != null) binding.privateKeyAText.visibility = View.VISIBLE
-//            else binding.privateKeyAText.visibility = View.INVISIBLE
-//        if (keyPairA?.publicKey != null) binding.publicKeyAText.visibility = View.VISIBLE
-//            else binding.publicKeyAText.visibility = View.INVISIBLE
-//        if (keyPairB?.privateKey != null) binding.privateKeyBText.visibility = View.VISIBLE
-//            else binding.privateKeyBText.visibility = View.INVISIBLE
-//        if (keyPairB?.publicKey != null) binding.publicKeyBText.visibility = View.VISIBLE
-//            else binding.publicKeyBText.visibility = View.INVISIBLE
-
     }
-
-
-//    fun test1ButtonClicked(v: View) {
-//        Toast.makeText(this, "1111", Toast.LENGTH_SHORT).show()
-//
-//        val key: Key = SecretKeySpec(
-//            sharedSecretHash,
-//            KeyProperties.KEY_ALGORITHM_AES
-//        )
-//        StoreInFile(this).storeKeystoreInFile( "key2", key)
-//    }
-//
-//
-//
-//    fun test2ButtonClicked(v: View) {
-//        println(StoreInFile(this).readAllKeysInFile())
-//    }
-
 }

@@ -73,6 +73,15 @@
                 android:textStyle="bold"
                 app:tint="@color/purple_700" />
 
+            <TextView
+                android:text="SDK"
+                android:layout_gravity="center"
+                android:textColor="@color/purple_700"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"/>
+
             <ImageView
                 android:id="@+id/userAKeyStateImageView"
                 android:src="@drawable/ic_baseline_cancel_24"

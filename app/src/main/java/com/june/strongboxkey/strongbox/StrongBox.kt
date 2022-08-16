@@ -15,7 +15,21 @@ import javax.crypto.spec.SecretKeySpec
 
 //TODO 예외처리 추가와 단위테스트로 각 메서드의 안정성을 올리는 작업이 반드시 필요함!
 
-class StrongBox(private val context: Context) {
+class StrongBox {
+    companion object {
+        private var instance: StrongBox? = null
+        private lateinit var context: Context
+
+        fun getInstance(_context: Context): StrongBox {
+            return instance ?: synchronized(this) {
+                instance ?: StrongBox().also {
+                    context = _context
+                    instance = it
+                }
+            }
+        }
+    }
+
     //CBC(Cipher Block Chaining) Mode 에서 첫번째 암호문 대신 사용되는 IV(Initial Vector)로 0으로 초기화 되어있습니다.
     private val iv: ByteArray = ByteArray(16)
     //기본 유형 키스토어(BKS)를 보관하고 있는 파일 이름으로 해당 파일에는 패스워드가 걸려있습니다.
