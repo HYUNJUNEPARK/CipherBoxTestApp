@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             }
             catch (e: Exception){
                 load(null)
-                return
+                return@apply
             }
             load(fis, storePassword)
         }
@@ -76,14 +76,15 @@ class MainActivity : AppCompatActivity() {
             val fis: FileInputStream? = openFileInput(keystoreFile)
             defaultKeyStore.load(fis, storePassword)
             fis?.close()
+
+            if (defaultKeyStore.containsAlias(random)) {
+                Toast.makeText(this@MainActivity, "aaaaaaaa", Toast.LENGTH_SHORT).show()
+                sharedSecretKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
+            }
         }
         catch (e: Exception) {
-            return@with
+            e.printStackTrace()
         }
-        //TODO error
-//        if (defaultKeyStore.containsAlias(random)) {
-//            sharedSecretKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
-//        }
     }
 
     //TODO sp random number
@@ -146,11 +147,41 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sharedSecretKeyDeleteButtonClicked(v: View) {
+        if (random == null) return
+
+        sdkUserStrongBox.deleteSharedSecretKey(random!!)
         Toast.makeText(this, "공유키 삭제", Toast.LENGTH_SHORT).show()
 
     }
 
     fun messageSendButtonClicked(v: View) = with(binding) {
+        val defaultKeyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply {
+            var fis: FileInputStream? = null
+            try {
+                fis = openFileInput(keystoreFile)
+            }
+            catch (e: Exception){
+                load(null)
+                return@apply
+            }
+            load(fis, storePassword)
+        }
+        try {
+            val fis: FileInputStream? = openFileInput(keystoreFile)
+            defaultKeyStore.load(fis, storePassword)
+            fis?.close()
+
+            if (!defaultKeyStore.containsAlias(random)) {
+                Toast.makeText(this@MainActivity, "shared secret key 없음", Toast.LENGTH_SHORT).show()
+                return@with
+            }
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+        }
+        
+        if (random == null) return@with
+        
         val userInput = messageEditText.text.toString()
         userMessageTextView.text = userInput
 
