@@ -46,31 +46,39 @@
             android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KeyPairA : "
-                android:textColor="@color/black" />
+                android:src="@drawable/ic_baseline_person_24"
+                android:textColor="@color/black"
+                app:tint="@color/purple_500" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/publicKeyAText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Public Key_A] "
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_baseline_key_24"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:visibility="invisible"
-                tools:visibility="visible" />
+                app:tint="@color/purple_700" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/privateKeyAText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" [Private Key_A] "
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_baseline_key_off_24"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:visibility="invisible"
-                tools:visibility="visible" />
+                app:tint="@color/purple_700" />
+
+            <ImageView
+                android:id="@+id/userAKeyStateImageView"
+                android:src="@drawable/ic_baseline_cancel_24"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
         <LinearLayout
@@ -79,73 +87,135 @@
             android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="KeyPairB : "
-                android:textColor="@color/black" />
+                android:src="@drawable/ic_baseline_person_24"
+                android:textColor="@color/black"
+                app:tint="@color/blue" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/publicKeyBText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Public Key_B] "
+                android:layout_marginLeft="20dp"
+                android:src="@drawable/ic_baseline_key_24"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:visibility="invisible"
-                tools:visibility="visible" />
+                app:tint="@color/blue" />
 
-            <TextView
+            <ImageView
                 android:id="@+id/privateKeyBText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/ic_baseline_key_off_24"
                 android:text=" [Private Key_B] "
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:visibility="invisible"
-                tools:visibility="visible" />
+                app:tint="@color/blue" />
+
+            <ImageView
+                android:id="@+id/userBKeyStateImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:src="@drawable/ic_baseline_cancel_24" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/publicKeyLayout"
+        android:id="@+id/sharedKeyLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/keyGenText">
 
-        <EditText
-            android:id="@+id/publicKeyEditText"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:ellipsize="end"
-            android:hint="Input public Key"
-            android:maxLines="1"
-            android:textSize="14sp" />
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/publicKeyChangeButton"
-            android:layout_width="0dp"
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_baseline_key_24" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Shared Secret Key"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:text="change"
-            android:textSize="12sp" />
+            android:text="="
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_baseline_key_24"
+                app:tint="@color/blue" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Public Key"
+                android:textColor="@color/blue"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_baseline_key_off_24"
+                app:tint="@color/purple_700" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Private Key"
+                android:textColor="@color/purple_700"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
+        android:layout_marginTop="20dp"
         android:id="@+id/userInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/publicKeyLayout">
+        app:layout_constraintTop_toBottomOf="@id/sharedKeyLayout">
 
         <EditText
             android:id="@+id/messageEditText"
@@ -198,7 +268,7 @@
             android:layout_marginTop="7dp"
             android:layout_marginBottom="7dp"
             android:background="#989393" />
-<!--        -->
+        <!--        -->
 
         <TextView
             android:layout_width="wrap_content"
@@ -240,22 +310,21 @@
             android:layout_marginBottom="7dp"
             android:background="#989393" />
 
-        <Button
-            android:id="@+id/testButton1"
-            android:text="button1"
-            android:onClick="test1ButtonClicked"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        <!--        <Button-->
+        <!--            android:id="@+id/testButton1"-->
+        <!--            android:text="button1"-->
+        <!--            android:onClick="test1ButtonClicked"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"/>-->
 
-        <Button
-            android:id="@+id/testButton2"
-            android:text="button2"
-            android:onClick="test2ButtonClicked"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        <!--        <Button-->
+        <!--            android:id="@+id/testButton2"-->
+        <!--            android:text="button2"-->
+        <!--            android:onClick="test2ButtonClicked"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"/>-->
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
