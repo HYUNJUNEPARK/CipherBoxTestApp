@@ -1,35 +1,36 @@
 package com.june.strongboxkey.app
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.june.strongboxkey.R
+import com.june.strongboxkey.app.TestStrongBox.Companion.defaultKeyStore
+import com.june.strongboxkey.app.TestStrongBox.Companion.filePassword
+import com.june.strongboxkey.app.TestStrongBox.Companion.keystoreFile
 import com.june.strongboxkey.databinding.ActivityMainBinding
 import com.june.strongboxkey.strongbox.StrongBox
 import java.io.FileInputStream
-import java.security.KeyStore
 import java.security.PublicKey
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    //sdk
-    private val sdkUserStrongBox = StrongBox.getInstance(this)
-    private val sdkUserKeyStoreAlias = "androidKeyStoreKey"
-    private val randomAlias = "randomNumber"
-    private var random: String? = null
 
     //test
-    private val testUserStrongBox = StrongBoxTest.getInstance(this)
-    private val testUserKeyStoreAlias = "test_androidKeyStoreKey"
-    private var publicKey: PublicKey ?= null
+    //random, ec key pair, ssk keystore
+    private val strongBox = TestStrongBox.getInstance(this)
+    private var random: String? = null
 
-    //shared Secret Key
-    private val keystoreFile = "default_keystore"
-    private val storePassword = "defaultStorePassword".toCharArray()
+    //sdk
+    //public key provider
+    private val publicKeyProviderStrongBox = StrongBox.getInstance(this)
+    private var publicKey: PublicKey? = null
 
     //shared preference
     private lateinit var spm: SharedPreferenceManager
+
+    private var keyId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,136 +40,85 @@ class MainActivity : AppCompatActivity() {
         initKeyState()
     }
 
-    private fun initKeyState()= with(binding) {
-        val androidKeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-            load(null)
-        }
-
-        val defaultKeyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply {
-            var fis: FileInputStream? = null
-            try {
-                fis = openFileInput(keystoreFile)
-            }
-            catch (e: Exception){
-                load(null)
-                return@apply
-            }
-            load(fis, storePassword)
-        }
-
-        //sdk
-        if (androidKeyStore.containsAlias(sdkUserKeyStoreAlias)) {
-            sdkUserKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
-        }
-        //random
-        if (spm.getString(randomAlias, "null") != "null") {
-            RandomNumberStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
-            random = spm.getString(randomAlias, "null")
-        }
-        //test
-        if (androidKeyStore.containsAlias(testUserKeyStoreAlias)) {
-            testUserKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
-            publicKey = testUserStrongBox.getECPublicKey()
-        }
-
-        //shared secret key
-        try {
-            val fis: FileInputStream? = openFileInput(keystoreFile)
-            defaultKeyStore.load(fis, storePassword)
-            fis?.close()
-
-            if (defaultKeyStore.containsAlias(random)) {
-                Toast.makeText(this@MainActivity, "aaaaaaaa", Toast.LENGTH_SHORT).show()
-                sharedSecretKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
-            }
-        }
-        catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    //TODO sp random number
     fun keyGenButtonClicked(v: View) {
-        //sdk
-        sdkUserStrongBox.generateECKeyPair()
-        random = sdkUserStrongBox.generateRandom(32)
-        spm.putString(randomAlias, random)
+        strongBox.generateECKeyPair()
+        random = strongBox.generateRandom(32)
+        publicKeyProviderStrongBox.generateECKeyPair()
+        publicKey = publicKeyProviderStrongBox.getECPublicKey()
 
-        //test
-        testUserStrongBox.generateECKeyPair()
+        if (strongBox.getECPublicKey() != null) {
+            binding.strongBoxKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
+        }
+        if (random != null) {
+            binding.randomNumberStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
+        }
+        if (publicKey != null) {
+            binding.publicKeyProviderKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
+        }
 
-        initKeyState()
+        Log.d("testLog", "random : $random")
     }
 
-    fun sdkKeyDeleteButtonClicked(v: View) {
-        sdkUserStrongBox.deleteECKeyPair().let { result ->
-            if (result) {
-                spm.putString(randomAlias, null)
-                Toast.makeText(this, "SDK 키 삭제", Toast.LENGTH_SHORT).show()
-                binding.sdkUserKeyStateImageView.setImageResource(R.drawable.ic_baseline_cancel_24)
-                binding.RandomNumberStateImageView.setImageResource(R.drawable.ic_baseline_cancel_24)
-            }
-            else {
-                Toast.makeText(this, "SDK 키 삭제 실패", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
-    fun testKeyDeleteButtonClicked(v: View) {
-        testUserStrongBox.deleteECKeyPair().let { result ->
-            if (result) {
-                Toast.makeText(this, "TEST 키 삭제", Toast.LENGTH_SHORT).show()
-                publicKey = null
-                binding.testUserKeyStateImageView.setImageResource(R.drawable.ic_baseline_cancel_24)
-            }
-            else {
-                Toast.makeText(this, "TEST 키 삭제 실패", Toast.LENGTH_SHORT).show()
-            }
-        }
+    private fun initKeyState() {
+
     }
 
     fun sharedSecretKeyGenButtonClicked(v: View) {
         if (publicKey == null || random == null) {
-            Toast.makeText(this, "Public Key 또는 Random 필요", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "퍼블릭키 또는 랜덤 없음", Toast.LENGTH_SHORT).show()
             return
         }
 
-        sdkUserStrongBox.generateSharedSecretKey(publicKey!!, random!!).let { keyId ->
-            Toast.makeText(this, "공유키 생성", Toast.LENGTH_SHORT).show()
-            /*TODO
-                a. 채널을 초대한 사람이 해당 메서드를 사용할 때
-                -> keyId 를 채널의 메타데이터로 업로드하는 기능 구현이 필요
-                -> keyId 와 채널 URL 주소를 매핑해주는 로컬 DB 구현이 필요
-                b. 채널 초대받은 사람이 해당 메서드를 사용할 때
-                -> 채널 메타데이터로부터 데이터를 가져와 사용 파라미터로 nonce 로 사용
-                -> keyId 와 채널 URL 주소를 매핑해주는 로컬 DB 구현이 필요
-            */
+        strongBox.generateSharedSecretKey(publicKey!!, random!!).let { result ->
+            keyId = result
+        }
+        Log.d("testLog", "ssk Key Id : $keyId")
+        if (keyId != null) {
+            binding.sharedSecretKeyStateImageView.setImageResource(R.drawable.ic_baseline_check_circle_24)
         }
     }
+
+
+
+    fun strongBoxKeyDeleteButtonClicked(v: View) {
+        strongBox.deleteECKeyPair().let { result ->
+            if (result) {
+                random = null
+                binding.strongBoxKeyStateImageView.setImageResource(R.drawable.ic_baseline_cancel_24)
+                binding.randomNumberStateImageView.setImageResource(R.drawable.ic_baseline_cancel_24)
+            } else {
+                Toast.makeText(this, "키 삭제 안됨", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun publicKeyProviderKeyDeleteButtonClicked(v: View) {
+        publicKeyProviderStrongBox.deleteECKeyPair().let { result ->
+            if (result) {
+                binding.publicKeyProviderKeyStateImageView.setImageResource(R.drawable.ic_baseline_cancel_24)
+                publicKey = null
+            } else {
+                Toast.makeText(this, "키 삭제 안됨", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
 
     fun sharedSecretKeyDeleteButtonClicked(v: View) {
         if (random == null) return
 
-        sdkUserStrongBox.deleteSharedSecretKey(random!!)
-        Toast.makeText(this, "공유키 삭제", Toast.LENGTH_SHORT).show()
+        strongBox.deleteSharedSecretKey(random!!)
 
     }
 
     fun messageSendButtonClicked(v: View) = with(binding) {
-        val defaultKeyStore = KeyStore.getInstance(KeyStore.getDefaultType()).apply {
-            var fis: FileInputStream? = null
-            try {
-                fis = openFileInput(keystoreFile)
-            }
-            catch (e: Exception){
-                load(null)
-                return@apply
-            }
-            load(fis, storePassword)
-        }
+        if (random == null) return@with
+
         try {
             val fis: FileInputStream? = openFileInput(keystoreFile)
-            defaultKeyStore.load(fis, storePassword)
+            defaultKeyStore.load(fis, filePassword)
             fis?.close()
 
             if (!defaultKeyStore.containsAlias(random)) {
@@ -179,18 +129,15 @@ class MainActivity : AppCompatActivity() {
         catch (e: Exception) {
             e.printStackTrace()
         }
-        
-        if (random == null) return@with
-        
+
         val userInput = messageEditText.text.toString()
         userMessageTextView.text = userInput
-
-        val encryption = sdkUserStrongBox.encrypt(userInput, random!!)
+        val encryption = strongBox.encrypt(userInput, random!!)
         encryptionCBCTextView.text = encryption
-
-        val decryption = sdkUserStrongBox.decrypt(encryption, random!!)
+        val decryption = strongBox.decrypt(encryption, random!!)
         decryptionCBCTextView.text = decryption
 
         messageEditText.text = null
     }
+
 }

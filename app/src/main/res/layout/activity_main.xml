@@ -82,19 +82,19 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/sdkUserKeyStateImageView"
+                android:id="@+id/strongBoxKeyStateImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
 
             <ImageView
-                android:id="@+id/sdkKeyDeleteImageView"
+                android:id="@+id/strongBoxKeyDeleteImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:onClick="sdkKeyDeleteButtonClicked"
+                android:onClick="strongBoxKeyDeleteButtonClicked"
                 android:src="@drawable/ic_baseline_delete_forever_24" />
 
         </LinearLayout>
@@ -112,7 +112,7 @@
                 android:textColor="@color/purple_700"
                 android:textStyle="bold" />
             <ImageView
-                android:id="@+id/RandomNumberStateImageView"
+                android:id="@+id/randomNumberStateImageView"
                 android:layout_width="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_height="wrap_content"
@@ -155,24 +155,25 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
-                android:text="TEST"
+                android:gravity="center"
+                android:text="PublicKey \n Provider"
                 android:textColor="@color/blue"
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/testUserKeyStateImageView"
+                android:id="@+id/publicKeyProviderKeyStateImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
 
             <ImageView
-                android:id="@+id/testKeyDeleteImageView"
+                android:id="@+id/publicKeyProviderKeyDeleteImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:onClick="testKeyDeleteButtonClicked"
+                android:onClick="publicKeyProviderKeyDeleteButtonClicked"
                 android:src="@drawable/ic_baseline_delete_forever_24" />
         </LinearLayout>
     </LinearLayout>
@@ -208,6 +209,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textColor="@color/black"
                 android:text="Shared \nSecret Key\n Gen"
                 android:textStyle="bold" />
         </LinearLayout>

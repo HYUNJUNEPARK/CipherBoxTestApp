@@ -4,6 +4,7 @@ import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import android.util.Log
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.security.*
@@ -18,9 +19,19 @@ import javax.crypto.spec.SecretKeySpec
 class StrongBox {
     //싱글톤 패턴
     companion object {
+        //TODO Do not place Android context classes in static fields; this is a memory leak
         private var instance: StrongBox? = null
         private lateinit var context: Context
 
+        /**
+         * StrongBox SDK 를 사용하기 위한 새로운 라이브러리 인스턴스 생성. 라이브러리 초기화 작업 수행
+         *
+         * @param _context application context
+         * @return Interface 싱글톤 객체
+         * TODO exception
+         * @throws IllegalArgumentException
+         *         제공된 application context 로 부터 확인한 application 이 허용 목록에 없는 경우
+         */
         fun getInstance(_context: Context): StrongBox {
             return instance ?: synchronized(this) {
                 instance ?: StrongBox().also { strongBox ->
@@ -34,11 +45,11 @@ class StrongBox {
     //CBC(Cipher Block Chaining) Mode 에서 첫번째 암호문 대신 사용되는 IV(Initial Vector)로 0으로 초기화 되어있습니다.
     private val iv: ByteArray = ByteArray(16)
     //기본 유형 키스토어(BKS)를 보관하고 있는 파일 이름으로 해당 파일에는 패스워드가 걸려있습니다.
-    private val keystoreFile = "default_keystore"
+    private val keystoreFile = "keystoreFile"
     //기본 유형 키스토어(BKS)를 보관하고 있는 파일을 열기 위한 패스워드입니다.
-    private val storePassword = "defaultStorePassword".toCharArray()
+    private val filePassword = "filePassword".toCharArray()
     //기본 유형 키스토어(BKS)에서 보관하고 있는 shared Secret Key 에 접근하기 위한 패스워드입니다.
-    private val keyPassword = "defaultKeyPassword".toCharArray()
+    private val keyEntryPassword = "KeyEntryPassword".toCharArray()
     //안드로이드 키스토어(AndroidKeyStore) 에 저장되어있는 EC Key Pair 의 식별자입니다.
     private val keyAlias = "androidKeyStoreKey"
     //안드로이드 키스토어(AndroidKeyStore) : 해당 키스토어에는 사용자의 EC Private Key / EC Public Key 가 저장되어 관리됩니다.
@@ -54,50 +65,67 @@ class StrongBox {
         }
         catch (e: Exception){
             load(null)
+            //TODO return ?
         }
-        load(fis, storePassword)
-    }
-    /**
-     * EC Private Key/EC Public Key 를 생성하고 안드로이드 키스토어(AndroidKeyStore) 에 저장해주는 메서드입니다.
-     * 안드로이드 API 31 이상 사용이 가능합니다.
-     */
-    fun generateECKeyPair() {
-        val keyPairGenerator = KeyPairGenerator.getInstance(
-            KeyProperties.KEY_ALGORITHM_EC,
-            "AndroidKeyStore"
-        )
-        val parameterSpec = KeyGenParameterSpec.Builder(
-            keyAlias,
-            KeyProperties.PURPOSE_ENCRYPT or
-                    KeyProperties.PURPOSE_DECRYPT or
-                    KeyProperties.PURPOSE_AGREE_KEY
-        ).run {
-            setUserAuthenticationRequired(false)
-            ECGenParameterSpec("secp256r1") //curve type
-            build()
-        }
-        keyPairGenerator.initialize(parameterSpec)
-        keyPairGenerator.generateKeyPair()
+        load(fis, filePassword)
     }
 
     /**
-     * 안드로이드 키스토어(AndroidKeyStore) 에 저장되어 있는 EC Public Key 를 가져오는 메서드입니다.
+     * StrongBox 에 저장된 모든 보안 데이터를 삭제하고 초기화
+     */
+    fun restStrongBox() {
+
+    }
+
+    /**
+     * EC 키 쌍(EC Private Key/EC Public Key)을 생성. 생성된 키 쌍은 StrongBox 의 안전한 저장소(AndroidKeyStore)에 저장
+     * 안드로이드 API 31 이상 사용 가능
+     *
+     * TODO User Exception 정의. Key Pair 생성에 실패한 경우. 재생성 조건을 충족하지 못한 경우.
+     */
+    fun generateECKeyPair() {
+        try {
+            val keyPairGenerator = KeyPairGenerator.getInstance(
+                KeyProperties.KEY_ALGORITHM_EC,
+                "AndroidKeyStore"
+            )
+            val parameterSpec = KeyGenParameterSpec.Builder(
+                keyAlias,
+                KeyProperties.PURPOSE_ENCRYPT or
+                        KeyProperties.PURPOSE_DECRYPT or
+                        KeyProperties.PURPOSE_AGREE_KEY
+            ).run {
+                setUserAuthenticationRequired(false)
+                ECGenParameterSpec("secp256r1") //curve type
+                build()
+            }
+            keyPairGenerator.initialize(parameterSpec)
+            keyPairGenerator.generateKeyPair()
+        } catch (e: Exception) {
+            //User Exception 정의
+        }
+    }
+
+    /**
+     * AndroidKeyStore 에 저장되어 있는 EC 키 쌍 중 공개키를 반환
      *
      * @return PublicKey
+     * TODO User Exception 정의.
      */
     fun getECPublicKey(): PublicKey? {
         return androidKeyStore.getCertificate(keyAlias).publicKey
     }
 
     /**
-     * 랜덤한 byteArray 를 생성해 주는 메서드입니다.
+     * Nonce 로 사용될 랜덤 데이터를 생성 후 반환
      *
-     * 생성된 byteArray 사용처
+     * 생성된 랜덤 데이터 사용처
      * 1) 해시를 만들 때 사용
      * 2) keyId 로 사용
      *
-     * @param size byteArray 의 길이를 입력합니다.
-     * @return byteArray 를 String 타입으로 바꾼 뒤 반환합니다.
+     * @param size 랜덤 데이터의 길이를 입력합니다.
+     * @return byteArray 랜덤 데이터를 String 으로 바꾼 뒤 반환합니다.
+     * TODO User Exception 정의.
      */
     fun generateRandom(size: Int): String {
         val random = ByteArray(size).apply {
@@ -123,14 +151,17 @@ class StrongBox {
      * @param publicKey 대화 상대의 Public Key 를 의미하며, 서버로 부터 받아 온 데이터를 사용합니다.
      * @param nonce random byteArray 를 의미하며 해시를 만들 때 사용합니다.
      * @return 문자열 타입의 keyId 를 반환하며, keyId 는 키스토어에서 Shared Secret Key 를 가져올 때 사용헙나다.
+     * TODO User Exception 정의.
      */
     fun generateSharedSecretKey(publicKey: PublicKey, nonce: String): String {
         val keyId:String = nonce
+        val random:ByteArray = Base64.decode(nonce, Base64.DEFAULT)
+
         val privateKey: PrivateKey
         androidKeyStore.getEntry(keyAlias, null).let { keyStoreEntry ->
             privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
         }
-        val random:ByteArray = Base64.decode(nonce, Base64.DEFAULT)
+
         var sharedSecretKey: Key
         KeyAgreement.getInstance("ECDH").apply {
             init(privateKey)
@@ -140,16 +171,28 @@ class StrongBox {
                 update(_sharedSecret)
             }
             val hash = messageDigest.digest(random)
-            sharedSecretKey = SecretKeySpec(hash, KeyProperties.KEY_ALGORITHM_AES)
+            sharedSecretKey = SecretKeySpec(
+                hash,
+                KeyProperties.KEY_ALGORITHM_AES
+            )
         }
-        defaultKeyStore.setKeyEntry(keyId, sharedSecretKey, keyPassword, null)
-        sharedSecretKey = SecretKeySpec(ByteArray(16), KeyProperties.KEY_ALGORITHM_AES)
+
+        defaultKeyStore.setKeyEntry(keyId, sharedSecretKey, keyEntryPassword, null)
         val ksOut: FileOutputStream = context.openFileOutput(keystoreFile, Context.MODE_PRIVATE)
-        defaultKeyStore.store(ksOut, storePassword)
+        defaultKeyStore.store(ksOut, filePassword)
         ksOut.close()
 
-        //TODO init 0000000 private key
-        //TODO init 0000000 shared secret key
+        //사용이 끝난 shared Secret Key 는 0 으로 초기화
+        sharedSecretKey = SecretKeySpec(
+            ByteArray(16),
+            KeyProperties.KEY_ALGORITHM_AES
+        )
+
+        //privateKey.destroy()
+        //TODO init 0 private key ??
+        //TODO overwrite useless key
+
+        Log.d("testLog", "private Key: $privateKey")
 
         return keyId
     }
@@ -160,6 +203,7 @@ class StrongBox {
      * 해당 메서드를 사용한 후 사용자에게 새로운 ECKeyPair 를 발급해 주는 기능 구현이 필요합니다.
      *
      * @return keyPair 가 안전하게 삭제되었다면 true 를 그렇지 않다면 false 를 반환합니다.
+     * TODO User Exception 정의.
      */
     fun deleteECKeyPair(): Boolean {
         try {
@@ -178,6 +222,9 @@ class StrongBox {
      * @param keyId 삭제할 SharedSecretKey 의 식별자입니다.
      * @return SharedSecretKey 가 안전하게 삭제되었다면 true 를 그렇지 않다면 false 를 반환합니다.
      */
+
+    //TODO 여기서 잘 안지워지는 듯함!
+    //파일, 키스토어는 남아있고 내부의 keyAlias 만 지워지는 듯 ?
     fun deleteSharedSecretKey(keyId: String): Boolean {
         try {
             defaultKeyStore.deleteEntry(keyId)
@@ -204,9 +251,10 @@ class StrongBox {
         catch (e: Exception){
             e.printStackTrace()
         }
-        defaultKeyStore.load(fis, storePassword)
+        defaultKeyStore.load(fis, filePassword)
         fis?.close()
-        val sharedSecretKey = defaultKeyStore.getKey(keyId, keyPassword)
+        val sharedSecretKey = defaultKeyStore.getKey(keyId, keyEntryPassword)
+        //TODO
 
         //메시지 암호화
         val encryptedMessage: String
@@ -238,9 +286,9 @@ class StrongBox {
         catch (e: Exception){
             e.printStackTrace()
         }
-        defaultKeyStore.load(fis, storePassword)
+        defaultKeyStore.load(fis, filePassword)
         fis?.close()
-        val sharedSecretKey = defaultKeyStore.getKey(keyId, keyPassword)
+        val sharedSecretKey = defaultKeyStore.getKey(keyId, keyEntryPassword)
 
         //메시지 복호화
         val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
