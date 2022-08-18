@@ -65,6 +65,7 @@ class StrongBox {
         }
         catch (e: Exception){
             load(null)
+            return@apply
             //TODO return ?
         }
         load(fis, filePassword)
@@ -184,16 +185,13 @@ class StrongBox {
 
         //사용이 끝난 shared Secret Key 는 0 으로 초기화
         sharedSecretKey = SecretKeySpec(
-            ByteArray(16),
+            ByteArray(16), //generateRandom(16).toByteArray() 램덤으로 채우는 방법
             KeyProperties.KEY_ALGORITHM_AES
         )
 
         //privateKey.destroy()
         //TODO init 0 private key ??
         //TODO overwrite useless key
-
-        Log.d("testLog", "private Key: $privateKey")
-
         return keyId
     }
 
@@ -223,8 +221,6 @@ class StrongBox {
      * @return SharedSecretKey 가 안전하게 삭제되었다면 true 를 그렇지 않다면 false 를 반환합니다.
      */
 
-    //TODO 여기서 잘 안지워지는 듯함!
-    //파일, 키스토어는 남아있고 내부의 keyAlias 만 지워지는 듯 ?
     fun deleteSharedSecretKey(keyId: String): Boolean {
         try {
             defaultKeyStore.deleteEntry(keyId)
@@ -253,8 +249,14 @@ class StrongBox {
         }
         defaultKeyStore.load(fis, filePassword)
         fis?.close()
+
+        //TODO key 가 없을 때 예외처리가 필요함!!!!
+
+
+        defaultKeyStore.containsAlias(keyId).let {
+            Log.d("testLog", "encrypt: $it")
+        }
         val sharedSecretKey = defaultKeyStore.getKey(keyId, keyEntryPassword)
-        //TODO
 
         //메시지 암호화
         val encryptedMessage: String
@@ -302,5 +304,26 @@ class StrongBox {
             decryptedMessage = cipher.doFinal(decryption)
         }
         return String(decryptedMessage)
+    }
+
+    /////////////////////////////////////////////
+
+    fun isSharedSecretKey(keyId: String):Boolean {
+        try {
+            defaultKeyStore.getKey(keyId, keyEntryPassword)
+        }
+        catch (e: Exception) {
+            Log.d("testLog", "isSharedSecretKey Error : $e")
+            return false
+        }
+        return true
+    }
+
+    fun getAllSecretKeyIds() {
+        //defaultKeyStore.
+        Log.d("testLog", "getAllSecretKeyIds: ${defaultKeyStore.size()}")
+        for (keyId in defaultKeyStore.aliases()) {
+            Log.d("testLog", "keyId: $keyId")
+        }
     }
 }

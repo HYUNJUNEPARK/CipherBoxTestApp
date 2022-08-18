@@ -32,8 +32,8 @@
 
     <LinearLayout
         android:id="@+id/KeyPairLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:orientation="vertical"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="@id/keyGenText"
@@ -44,151 +44,58 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:gravity="center"
             android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_person_24"
-                android:textColor="@color/black"
-                app:tint="@color/purple_500" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_baseline_key_24"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:tint="@color/purple_700" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_baseline_key_off_24"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:tint="@color/purple_700" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:text="SDK  "
-                android:textColor="@color/purple_700"
+                android:text="ECKeyPair"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <ImageView
-                android:id="@+id/strongBoxKeyStateImageView"
+                android:id="@+id/ecKeyPairStateImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/ic_baseline_cancel_24" />
 
             <ImageView
-                android:id="@+id/strongBoxKeyDeleteImageView"
+                android:id="@+id/ecKeyPairDeleteImageView"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:onClick="strongBoxKeyDeleteButtonClicked"
-                android:src="@drawable/ic_baseline_delete_forever_24" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Random Number"
-                android:layout_gravity="center"
-                android:textColor="@color/purple_700"
-                android:textStyle="bold" />
-            <ImageView
-                android:id="@+id/randomNumberStateImageView"
-                android:layout_width="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_cancel_24" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_baseline_person_24"
-                android:textColor="@color/black"
-                app:tint="@color/blue" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/ic_baseline_key_24"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:tint="@color/blue" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_baseline_key_off_24"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:tint="@color/blue" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:gravity="center"
-                android:text="PublicKey \n Provider"
-                android:textColor="@color/blue"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/publicKeyProviderKeyStateImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:src="@drawable/ic_baseline_cancel_24" />
-
-            <ImageView
-                android:id="@+id/publicKeyProviderKeyDeleteImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:onClick="publicKeyProviderKeyDeleteButtonClicked"
+                android:onClick="ecKeyPairDeleteButtonClicked"
                 android:src="@drawable/ic_baseline_delete_forever_24" />
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Random : "
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/randomTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            tools:text="ASDF#$@#AASDDFAFADFDSSDFCDDDS" />
     </LinearLayout>
 
+
     <LinearLayout
-        android:id="@+id/sharedKeyLayout"
-        android:layout_width="0dp"
+        android:id="@+id/sharedKeyGenLayout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/keyGenText">
-
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -209,82 +116,46 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textColor="@color/black"
                 android:text="Shared \nSecret Key\n Gen"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
         </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="="
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_baseline_key_24"
-                app:tint="@color/blue" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Public Key"
-                android:textColor="@color/blue"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="+"
-            android:textSize="30sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_baseline_key_off_24"
-                app:tint="@color/purple_700" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Private Key"
-                android:textColor="@color/purple_700"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <ImageView
-            android:id="@+id/sharedSecretKeyStateImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:src="@drawable/ic_baseline_cancel_24" />
-
-        <ImageView
-            android:id="@+id/sharedSecretKeyDeleteImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:onClick="sharedSecretKeyDeleteButtonClicked"
-            android:src="@drawable/ic_baseline_delete_forever_24" />
-
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/sharedKeyGenLayout"
+        app:layout_constraintTop_toTopOf="@id/sharedKeyGenLayout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Key Alias : "
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/sharedSecretKeyAliasTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            tools:text="ASDF#$@#AASDDFAFADFDSSDFCDDDS" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/sharedSecretKeyDeleteImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginLeft="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:onClick="sharedSecretKeyDeleteButtonClicked"
+        android:src="@drawable/ic_baseline_delete_forever_24"
+        app:layout_constraintBottom_toBottomOf="@id/sharedKeyGenLayout"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
         android:id="@+id/userInputLayout"
@@ -294,7 +165,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/sharedKeyLayout">
+        app:layout_constraintTop_toBottomOf="@id/sharedKeyGenLayout">
 
         <EditText
             android:id="@+id/messageEditText"
@@ -389,7 +260,19 @@
             android:layout_marginBottom="7dp"
             android:background="#989393" />
 
+        <Button
+            android:onClick="testButtonClicked"
+            android:text="isKey?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:onClick="getAllKeyIds"
+            android:text="get All Keys"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
