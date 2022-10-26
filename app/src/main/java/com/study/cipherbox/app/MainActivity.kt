@@ -4,34 +4,35 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import com.study.cipherbox.R
 import com.study.cipherbox.databinding.ActivityMainBinding
-import com.study.cipherbox.strongbox.AESUtils
-import com.study.cipherbox.strongbox.KeyProvider
-import com.study.cipherbox.strongbox.StrongBox
-import java.security.PublicKey
+import com.study.cipherbox.sdk.CipherBox
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var defaultKeypair: KeyPairModel? = null //sender
     private var usimKeypair: KeyPairModel? = null //recipient
     private var sharedSecretKey: ByteArray? = null
-    lateinit var keyProvider: KeyProvider
-    lateinit var aesUtils: AESUtils
+
+    private lateinit var cipherBox: CipherBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        keyProvider = KeyProvider()
-        aesUtils = AESUtils()
+        try {
+            cipherBox = CipherBox.getInstance()!!
+            binding.mainActivity = this
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
+
+
 
     fun generateKeypair(v: View) {
         try {
-            defaultKeypair = keyProvider.generateECKeypair()
-            usimKeypair = keyProvider.generateECKeypair()
+            defaultKeypair = cipherBox.generateECKeypair()
+            usimKeypair = cipherBox.generateECKeypair()
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "예기치 못한 에러가 발생했습니다.", Toast.LENGTH_SHORT).show()
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         try {
-            sharedSecretKey = keyProvider.agreementKey(
+            sharedSecretKey = cipherBox.agreementKey(
                 privateKey = defaultKeypair!!.privateKey,
                 publicKey = usimKeypair!!.publicKey
             )
@@ -64,11 +65,11 @@ class MainActivity : AppCompatActivity() {
             return
         }
         val message = binding.messageEditText.text.toString()
-        val encryptedMessage = aesUtils.encrypt(
+        val encryptedMessage = cipherBox.encrypt_ex_ver(
             message = message,
             key = sharedSecretKey!!
         )
-        val decryptedMessage = aesUtils.decrypt(
+        val decryptedMessage = cipherBox.decrypt_ex_ver(
             message = encryptedMessage,
             key = sharedSecretKey!!
         )

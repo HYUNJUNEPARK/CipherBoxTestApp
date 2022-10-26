@@ -1,4 +1,4 @@
-package com.study.cipherbox.strongbox
+package com.study.cipherbox.tmporary
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
@@ -16,11 +16,11 @@ import javax.crypto.spec.SecretKeySpec
 
 //TODO 예외처리 추가와 단위테스트로 각 메서드의 안정성을 올리는 작업이 반드시 필요함!
 
-class StrongBox {
+class StrongBox_deprecated {
     //싱글톤 패턴
     companion object {
         //TODO Do not place Android context classes in static fields; this is a memory leak
-        private var instance: StrongBox? = null
+        private var instance: StrongBox_deprecated? = null
         private lateinit var context: Context
 
         /**
@@ -32,9 +32,9 @@ class StrongBox {
          * @throws IllegalArgumentException
          *         제공된 application context 로 부터 확인한 application 이 허용 목록에 없는 경우
          */
-        fun getInstance(_context: Context): StrongBox {
+        fun getInstance(_context: Context): StrongBox_deprecated {
             return instance ?: synchronized(this) {
-                instance ?: StrongBox().also { strongBox ->
+                instance ?: StrongBox_deprecated().also { strongBox ->
                     context = _context
                     instance = strongBox
                 }
