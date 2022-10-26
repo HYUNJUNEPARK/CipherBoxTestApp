@@ -1,4 +1,4 @@
-package com.june.strongboxkey
+package com.study.cipherbox
 
 import org.junit.Test
 import org.junit.Assert.*

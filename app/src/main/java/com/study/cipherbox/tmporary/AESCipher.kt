@@ -1,4 +1,4 @@
-package com.june.strongboxkey.tmporary
+package com.study.cipherbox.tmporary
 
 import android.security.keystore.KeyProperties
 import android.util.Base64

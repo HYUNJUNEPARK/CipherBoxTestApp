@@ -1,4 +1,4 @@
-package com.june.strongboxkey.app
+package com.study.cipherbox.app
 
 import android.content.Context
 import android.content.SharedPreferences

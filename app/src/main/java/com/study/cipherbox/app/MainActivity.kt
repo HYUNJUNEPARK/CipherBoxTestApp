@@ -1,27 +1,27 @@
-package com.june.strongboxkey.app
+package com.study.cipherbox.app
 
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.june.strongboxkey.R
-import com.june.strongboxkey.databinding.ActivityMainBinding
-import com.june.strongboxkey.strongbox.StrongBox
+import androidx.databinding.DataBindingUtil
+import com.study.cipherbox.R
+import com.study.cipherbox.databinding.ActivityMainBinding
+import com.study.cipherbox.strongbox.StrongBox
 import java.security.PublicKey
 
 class MainActivity : AppCompatActivity() {
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private lateinit var binding: ActivityMainBinding
 
     private val strongBox = StrongBox.getInstance(this)
     private var publicKey: PublicKey? = null
     private lateinit var spm: SharedPreferenceManager
     private var keyId: String? = null
     private var random: String? = null
-    private val TAG = "testLog"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         spm = SharedPreferenceManager.getInstance(this)!!
         initKeyState()

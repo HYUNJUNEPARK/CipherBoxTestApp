@@ -1,4 +1,4 @@
-package com.june.strongboxkey.strongbox
+package com.study.cipherbox.strongbox
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec

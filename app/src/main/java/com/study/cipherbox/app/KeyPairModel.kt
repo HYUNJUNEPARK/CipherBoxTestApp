@@ -1,4 +1,4 @@
-package com.june.strongboxkey.app
+package com.study.cipherbox.app
 
 import java.security.PrivateKey
 import java.security.PublicKey

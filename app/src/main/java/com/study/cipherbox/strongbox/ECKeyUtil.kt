@@ -1,4 +1,4 @@
-package com.june.strongboxkey.strongbox
+package com.study.cipherbox.strongbox
 
 import java.math.BigInteger
 import java.security.KeyFactory
