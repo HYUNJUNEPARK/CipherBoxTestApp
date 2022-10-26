@@ -4,28 +4,45 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import com.study.cipherbox.R
 import com.study.cipherbox.databinding.ActivityMainBinding
 import com.study.cipherbox.sdk.CipherBox
 
 class MainActivity : AppCompatActivity() {
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private var defaultKeypair: KeyPairModel? = null //sender
     private var usimKeypair: KeyPairModel? = null //recipient
     private var sharedSecretKey: ByteArray? = null
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var cipherBox: CipherBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
 
         try {
-            cipherBox = CipherBox.getInstance()!!
-            binding.mainActivity = this
+            if (Util.checkDeviceVersion()) {
+                binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+                cipherBox = CipherBox.getInstance(this)!!
+                binding.mainActivity = this
+            } else {
+                Toast.makeText(this, "API 31 이상 사용 가능", Toast.LENGTH_SHORT).show()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
+    fun generateECKeyPair() {
+        try {
+            cipherBox.generateECKeyPair()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
+
 
 
 

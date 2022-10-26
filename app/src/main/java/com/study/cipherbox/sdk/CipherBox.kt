@@ -46,7 +46,6 @@ class CipherBox {
 
     //AndroidAPI 31 이상 사용 가능
     fun generateECKeyPair() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val keyPairGenerator = KeyPairGenerator.getInstance(
                 KeyProperties.KEY_ALGORITHM_EC,
                 "AndroidKeyStore"
@@ -63,11 +62,6 @@ class CipherBox {
             }
             keyPairGenerator.initialize(parameterSpec)
             keyPairGenerator.generateKeyPair()
-        }
-        //Android API 30 이하
-        else {
-            //SDK 사용 불가
-        }
     }
 
     fun getECPublicKey(): PublicKey {

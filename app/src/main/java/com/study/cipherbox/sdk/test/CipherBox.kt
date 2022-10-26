@@ -39,7 +39,6 @@ class CipherBox {
     //테스트를 위한 오버로딩 메서드
     //계정마다 keyStoreAlias 를 다르게 등록해 ECKeyPair 식별자로 사용
     fun generateECKeyPair(keyStoreAlias: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val keyPairGenerator = KeyPairGenerator.getInstance(
                 KeyProperties.KEY_ALGORITHM_EC,
                 "AndroidKeyStore"
@@ -56,10 +55,6 @@ class CipherBox {
             }
             keyPairGenerator.initialize(parameterSpec)
             keyPairGenerator.generateKeyPair()
-        }
-        else {
-            //SDK 사용 불가
-        }
     }
 
     //테스트를 위한 오버로딩 메서드
