@@ -1,4 +1,4 @@
-package com.june.strongboxkey
+package com.study.cipherbox
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
