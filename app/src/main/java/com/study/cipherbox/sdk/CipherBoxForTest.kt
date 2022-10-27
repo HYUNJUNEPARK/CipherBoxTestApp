@@ -1,28 +1,25 @@
-package com.study.cipherbox.sdk.test
+package com.study.cipherbox.sdk
 
 import android.content.Context
-import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import com.konai.sendbirdapisampleapp.strongbox.EncryptedSharedPreferencesManager
-import com.konai.sendbirdapisampleapp.strongbox.StrongBox
 import java.security.*
 import java.security.spec.ECGenParameterSpec
 import javax.crypto.KeyAgreement
 import javax.crypto.spec.SecretKeySpec
 
-class CipherBox {
+class CipherBoxForTest {
     companion object {
-        private var instance: CipherBox? = null
+        private var instance: CipherBoxForTest? = null
         private lateinit var espm: EncryptedSharedPreferencesManager
         private lateinit var context: Context
 
-        fun getInstance(): CipherBox? {
+        fun getInstance(): CipherBoxForTest? {
             if (instance == null) {
                 espm = EncryptedSharedPreferencesManager.getInstance(context)!!
                 context = context
-                instance = CipherBox()
+                instance = CipherBoxForTest()
             }
             return instance
         }
@@ -73,7 +70,7 @@ class CipherBox {
         val random: ByteArray = Base64.decode(nonce, Base64.NO_WRAP)
 
         val privateKey: PrivateKey
-        StrongBox.androidKeyStore.getEntry(userId, null).let { keyStoreEntry ->
+        androidKeyStore.getEntry(userId, null).let { keyStoreEntry ->
             privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
         }
 
