@@ -5,8 +5,7 @@ import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import com.konai.sendbirdapisampleapp.strongbox.EncryptedSharedPreferencesManager
-import com.konai.sendbirdapisampleapp.strongbox.StrongBox
+import com.study.cipherbox.sdk.EncryptedSharedPreferencesManager
 import java.security.*
 import java.security.spec.ECGenParameterSpec
 import javax.crypto.KeyAgreement
@@ -73,7 +72,7 @@ class CipherBox {
         val random: ByteArray = Base64.decode(nonce, Base64.NO_WRAP)
 
         val privateKey: PrivateKey
-        StrongBox.androidKeyStore.getEntry(userId, null).let { keyStoreEntry ->
+        androidKeyStore.getEntry(userId, null).let { keyStoreEntry ->
             privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
         }
 

@@ -1,14 +1,11 @@
-package com.konai.sendbirdapisampleapp.strongbox
+package com.study.cipherbox.sdk
 
 import android.security.keystore.KeyProperties
-import com.konai.sendbirdapisampleapp.strongbox.StrongBox.Companion.ecKeyPairAlias
 import java.math.BigInteger
 import java.security.KeyFactory
-import java.security.KeyStore
 import java.security.PublicKey
 import java.security.interfaces.ECPublicKey
 import java.security.spec.*
-import java.util.*
 import kotlin.collections.HashMap
 
 object ECKeyUtil {
@@ -69,17 +66,5 @@ object ECKeyUtil {
         val curve = EllipticCurve(ecField, a, b)
         val g = ECPoint(gX, gY)
         ECParameterSpec(curve, g, n, h)
-    }
-
-    //새로 추가한 함수
-    fun isECKeyPair(): Boolean {
-        val keyStoreEntry: KeyStore.Entry? = StrongBox.androidKeyStore.getEntry(ecKeyPairAlias, null)
-        return keyStoreEntry != null
-    }
-
-    //테스트 앱용
-    fun isECKeyPair(userId: String): Boolean {
-        val keyStoreEntry: KeyStore.Entry? = StrongBox.androidKeyStore.getEntry(userId, null)
-        return keyStoreEntry != null
     }
 }

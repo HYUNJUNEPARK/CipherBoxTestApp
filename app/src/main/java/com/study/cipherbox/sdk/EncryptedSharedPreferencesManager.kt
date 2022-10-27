@@ -1,4 +1,4 @@
-package com.konai.sendbirdapisampleapp.strongbox
+package com.study.cipherbox.sdk
 
 import android.content.Context
 import android.content.SharedPreferences

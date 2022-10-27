@@ -1,12 +1,9 @@
 package com.study.cipherbox.sdk
 
 import android.content.Context
-import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import com.konai.sendbirdapisampleapp.strongbox.EncryptedSharedPreferencesManager
-import com.konai.sendbirdapisampleapp.strongbox.StrongBox
 import com.study.cipherbox.app.KeyPairModel
 import java.math.BigInteger
 import java.security.*
@@ -71,10 +68,12 @@ class CipherBox {
     fun generateSharedSecretKey(publicKey: PublicKey, nonce: String): String {
         val keyId: String = nonce
         val random: ByteArray = Base64.decode(nonce, Base64.NO_WRAP)
+
         val privateKey: PrivateKey
         StrongBox.androidKeyStore.getEntry(defaultKeyStoreAlias, null).let { keyStoreEntry ->
             privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
         }
+
         var sharedSecretKey: String
         KeyAgreement.getInstance("ECDH").apply {
             init(privateKey)
@@ -91,12 +90,13 @@ class CipherBox {
                 sharedSecretKey = Base64.encodeToString(secretKeySpec.encoded, Base64.NO_WRAP)
             }
         }
+
         espm.putString(keyId, sharedSecretKey)
         return keyId
     }
 
 
-    fun resetStrongBox() {
+    fun reset() {
         androidKeyStore.deleteEntry(defaultKeyStoreAlias)
         espm.removeAll()
     }
@@ -183,10 +183,9 @@ class CipherBox {
     }
 
     fun isECKeyPair(): Boolean {
-        val keyStoreEntry: KeyStore.Entry? = StrongBox.androidKeyStore.getEntry(StrongBox.ecKeyPairAlias, null)
+        val keyStoreEntry: KeyStore.Entry? = StrongBox.androidKeyStore.getEntry(defaultKeyStoreAlias, null)
         return keyStoreEntry != null
     }
-
 
 
 
