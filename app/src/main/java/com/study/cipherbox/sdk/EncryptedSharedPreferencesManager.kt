@@ -5,31 +5,6 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
-/**
- * Android M (API 23) 이상 사용 가능
- *
- * 빌드 방법
- * implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha03'
- * or
- * File > Project Structure > Dependencies > app > Declared Dependencies [+]
- * > Library Dependency> 'androidx.security' 검색 > security-crypto 최신 버전을 설치
- *
- * XML 파일 위치
- * data > data > 패키지명 > shared_prefs > encrypted_pref.xml
- *
- * EncryptedSharedPreferencesManager 인스턴스 초기화
- *  private lateinit var encryptedSpm: EncryptedSharedPreferencesManager
- *      ...
- *  override fun onCreate(savedInstanceState: Bundle?) {
- *      ...
- *      encryptedSpm = EncryptedSharedPreferencesManager.getInstance(this)!!
- *  }
- *
- * MasterKey 정보
- * 키스토어 : AndroidKeyStore
- * keyAlias : "_androidx_security_master_key_"
- */
-
 class EncryptedSharedPreferencesManager {
     companion object {
         const val PREFERENCE_NAME = "encrypted_pref"

@@ -2,21 +2,15 @@ package com.study.cipherbox.sdk
 
 import android.security.keystore.KeyProperties
 import java.math.BigInteger
+import java.security.AlgorithmParameters
 import java.security.KeyFactory
+import java.security.NoSuchAlgorithmException
 import java.security.PublicKey
 import java.security.interfaces.ECPublicKey
 import java.security.spec.*
-import kotlin.collections.HashMap
 
 object ECKeyUtil {
-    /**
-     * 공개키로 affineX, affineY 를생성
-     *
-     * @param publicKey 서버에 업로드할 공개키
-     * @return affineX, affineY를 HashMap<String, String>으로 반환
-     * @throws Exception
-     */
-    @Throws(Exception::class)
+    //공개키로 affineX, affineY 를생성
     fun extractAffineXY(userId: String, publicKey: PublicKey): HashMap<String, String> {
 
 //        //TODO keyValue(ByteArray) -> Base64 String -> upload to server
@@ -33,15 +27,29 @@ object ECKeyUtil {
         }
     }
 
-    /**
-     * affineX, affineY 로 공개키 생성
-     *
-     * @param affineX 공개키의 x 좌표
-     * @param affineY 공개키의 y 좌표
-     * @return 완성한 공개키 반환
-     */
-    @Throws(Exception::class)
-    fun coordinatePublicKey(affineX: String, affineY: String): PublicKey {
+    //a. affineX, affineY 로 공개키 생성
+    private fun deriveECPublicKeyFromECPoint(affineX: String, affineY: String): ECPublicKey? {
+        val affineX = BigInteger(affineX)
+        val affineY = BigInteger(affineY)
+        val point = ECPoint(affineX, affineY)
+        try {
+            val algorithmParameters: AlgorithmParameters = AlgorithmParameters.getInstance(KeyProperties.KEY_ALGORITHM_EC)
+            algorithmParameters.init(ECGenParameterSpec("secp256r1"))
+            val parameterSpec: ECParameterSpec =
+                algorithmParameters.getParameterSpec(ECParameterSpec::class.java)
+            val publicKeySpec: KeySpec = ECPublicKeySpec(point, parameterSpec)
+            return KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC).generatePublic(publicKeySpec) as ECPublicKey
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        } catch (e: InvalidParameterSpecException) {
+            e.printStackTrace()
+        } catch (e: InvalidKeySpecException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    fun _deriveECPublicKeyFromECPoint(affineX: String, affineY: String): PublicKey {
         val affineX = BigInteger(affineX)
         val affineY = BigInteger(affineY)
         val ecPoint = ECPoint(affineX, affineY)
