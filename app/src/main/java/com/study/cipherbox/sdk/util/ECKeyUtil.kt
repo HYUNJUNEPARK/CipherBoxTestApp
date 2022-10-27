@@ -1,6 +1,7 @@
-package com.study.cipherbox.sdk
+package com.study.cipherbox.sdk.util
 
 import android.security.keystore.KeyProperties
+import android.util.Base64
 import java.math.BigInteger
 import java.security.AlgorithmParameters
 import java.security.KeyFactory
@@ -10,14 +11,42 @@ import java.security.interfaces.ECPublicKey
 import java.security.spec.*
 
 object ECKeyUtil {
-    //공개키로 affineX, affineY 를생성
+    fun stringToPublicKey(publicKey: String): PublicKey? {
+        try {
+            //val encoded: ByteArray = java.util.Base64.getDecoder().decode(publicKey)
+            val encoded: ByteArray = Base64.decode(publicKey, Base64.NO_WRAP)
+            val keyFactory: KeyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC)
+            val templateForECPublicKey = byteArrayOf(
+                0x30, 0x59,
+                0x30, 0x13,
+                0x06, 0x07, 0x2A, 0x86.toByte(), 0x48, 0xCE.toByte(), 0x3D, 0x02, 0x01,
+                0x06, 0x08, 0x2A, 0x86.toByte(), 0x48, 0xCE.toByte(), 0x3D, 0x03, 0x01, 0x07,
+                0x03, 0x42, 0x00
+            )
+            val keySpec = X509EncodedKeySpec(templateForECPublicKey + encoded)
+            return keyFactory.generatePublic(keySpec) as ECPublicKey
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    //https://stackoverflow.com/questions/52384809/public-key-to-string-and-then-back-to-public-key-java
+    fun publicKeyToString(publicKey: PublicKey): String? {
+        try {
+            //publicKey -> byte
+            val _publicKey: ByteArray = publicKey.encoded
+            //byte -> string
+            val publicKey: String = Base64.encodeToString(_publicKey, Base64.NO_WRAP)
+            return publicKey
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    //공개키로 affineX, affineY 생성
     fun extractAffineXY(userId: String, publicKey: PublicKey): HashMap<String, String> {
-
-//        //TODO keyValue(ByteArray) -> Base64 String -> upload to server
-//        val encodedData = (publicKey as ECPublicKey).encoded
-//        val keyValue = Arrays.copyOfRange(encodedData, encodedData.size - 65, encodedData.size )
-
-        //publickey 로 다시 바꾸는 과정에서 잘라야하는 데이터가 생길 수 있음
         (publicKey as ECPublicKey).let { ecPublicKey ->
             return hashMapOf(
                 "userId" to userId,
