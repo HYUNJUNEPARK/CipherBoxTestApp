@@ -1,4 +1,4 @@
-package com.study.cipherbox.sdk.util
+package com.study.cipherbox.sdk
 
 import android.security.keystore.KeyProperties
 import android.util.Base64
@@ -11,27 +11,6 @@ import java.security.interfaces.ECPublicKey
 import java.security.spec.*
 
 object ECKeyUtil {
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    fun stringToPublicKey(publicKey: String): PublicKey? {
-//        try {
-//            val encoded: ByteArray = java.util.Base64.getDecoder().decode(publicKey)
-//            //val encoded: ByteArray = Base64.decode(publicKey, Base64.NO_WRAP)
-//            val keyFactory: KeyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC)
-//            val templateForECPublicKey = byteArrayOf(
-//                0x30, 0x59,
-//                0x30, 0x13,
-//                0x06, 0x07, 0x2A, 0x86.toByte(), 0x48, 0xCE.toByte(), 0x3D, 0x02, 0x01,
-//                0x06, 0x08, 0x2A, 0x86.toByte(), 0x48, 0xCE.toByte(), 0x3D, 0x03, 0x01, 0x07,
-//                0x03, 0x42, 0x00
-//            )
-//            val keySpec = X509EncodedKeySpec(templateForECPublicKey + encoded)
-//            return keyFactory.generatePublic(keySpec) as ECPublicKey
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//        return null
-//    }
-
     fun stringToPublicKey(publicKey: String): PublicKey? {
         try {
             val _publicKey = Base64.decode(publicKey, Base64.NO_WRAP)
@@ -68,7 +47,8 @@ object ECKeyUtil {
         }
     }
 
-    //a. affineX, affineY 로 공개키 생성
+    //affineX, affineY 로 공개키 생성
+    //ecParameterSpec 를 사용하지 않아도 됨
     private fun deriveECPublicKeyFromECPoint(affineX: String, affineY: String): ECPublicKey? {
         val affineX = BigInteger(affineX, 16)
         val affineY = BigInteger(affineY, 16)

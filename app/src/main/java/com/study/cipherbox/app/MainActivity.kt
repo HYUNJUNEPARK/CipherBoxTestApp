@@ -9,7 +9,7 @@ import com.study.cipherbox.R
 import com.study.cipherbox.databinding.ActivityMainBinding
 import com.study.cipherbox.sdk.CipherBox
 import com.study.cipherbox.sdk.EncryptedSharedPreferencesManager
-import com.study.cipherbox.sdk.util.ECKeyUtil
+import com.study.cipherbox.sdk.ECKeyUtil
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         try {
             val _publicKey = cipherBox.getECPublicKey()
             val publicKey = ECKeyUtil.publicKeyToString(_publicKey)
-            binding.publicKeyTextView.text = publicKey.toString()
+            binding.publicKeyTextView.text = publicKey
         } catch (e: Exception) {
             e.printStackTrace()
         }
