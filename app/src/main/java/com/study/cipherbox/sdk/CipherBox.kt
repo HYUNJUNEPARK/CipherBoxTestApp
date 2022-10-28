@@ -65,12 +65,10 @@ class CipherBox {
     fun generateSharedSecretKey(publicKey: PublicKey, nonce: String): String {
         val keyId: String = nonce
         val random: ByteArray = Base64.decode(nonce, Base64.NO_WRAP)
-
         val privateKey: PrivateKey
         androidKeyStore.getEntry(defaultKeyStoreAlias, null).let { keyStoreEntry ->
             privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
         }
-
         var sharedSecretKey: String
         KeyAgreement.getInstance("ECDH").apply {
             init(privateKey)
@@ -87,11 +85,9 @@ class CipherBox {
                 sharedSecretKey = Base64.encodeToString(secretKeySpec.encoded, Base64.NO_WRAP)
             }
         }
-
         espm.putString(keyId, sharedSecretKey)
         return keyId
     }
-
 
     fun reset() {
         androidKeyStore.deleteEntry(defaultKeyStoreAlias)

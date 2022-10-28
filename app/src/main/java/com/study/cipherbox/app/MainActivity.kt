@@ -2,7 +2,6 @@ package com.study.cipherbox.app
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -10,6 +9,7 @@ import com.study.cipherbox.R
 import com.study.cipherbox.databinding.ActivityMainBinding
 import com.study.cipherbox.sdk.CipherBox
 import com.study.cipherbox.sdk.EncryptedSharedPreferencesManager
+import com.study.cipherbox.sdk.util.ECKeyUtil
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -29,9 +29,20 @@ class MainActivity : AppCompatActivity() {
 
                 isECKey()
                 getKeyListOnESP()
+                getPublicKey()
             } else {
                 Toast.makeText(this, "API 31 이상 사용 가능", Toast.LENGTH_SHORT).show()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun getPublicKey() {
+        try {
+            val _publicKey = cipherBox.getECPublicKey()
+            val publicKey = ECKeyUtil.publicKeyToString(_publicKey)
+            binding.publicKeyTextView.text = publicKey.toString()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -53,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                 for (keyId in keyIdList!!) {
                     keyIds.append("$keyId\n")
                 }
-                Log.d("testLog", "getKeyListOnESP: $keyIds")
+                binding.publicKeyIdTextView.text = keyIds.toString()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -62,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onGenerateECKeyPair() {
         try {
+            getPublicKey()
             cipherBox.generateECKeyPair()
             binding.keyAgreementButton.isEnabled = true
         } catch (e: Exception) {
@@ -78,6 +90,7 @@ class MainActivity : AppCompatActivity() {
                 nonce = keyId
             )
 
+            binding.keyIdTextView.text = keyId
             binding.sendButton.isEnabled = true
         } catch (e: Exception) {
             e.printStackTrace()

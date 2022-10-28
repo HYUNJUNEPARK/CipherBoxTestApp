@@ -1,25 +1,26 @@
-package com.study.cipherbox.sdk
+package com.study.cipherbox.sdk.test
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import com.study.cipherbox.sdk.EncryptedSharedPreferencesManager
 import java.security.*
 import java.security.spec.ECGenParameterSpec
 import javax.crypto.KeyAgreement
 import javax.crypto.spec.SecretKeySpec
 
-class CipherBoxForTest {
+class CipherBox {
     companion object {
-        private var instance: CipherBoxForTest? = null
+        private var instance: CipherBox? = null
         private lateinit var espm: EncryptedSharedPreferencesManager
         private lateinit var context: Context
 
-        fun getInstance(): CipherBoxForTest? {
+        fun getInstance(): CipherBox? {
             if (instance == null) {
                 espm = EncryptedSharedPreferencesManager.getInstance(context)!!
                 context = context
-                instance = CipherBoxForTest()
+                instance = CipherBox()
             }
             return instance
         }
