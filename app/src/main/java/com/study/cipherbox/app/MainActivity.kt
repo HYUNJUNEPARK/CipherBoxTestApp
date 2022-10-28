@@ -2,7 +2,9 @@ package com.study.cipherbox.app
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.study.cipherbox.R
@@ -10,12 +12,15 @@ import com.study.cipherbox.databinding.ActivityMainBinding
 import com.study.cipherbox.sdk.CipherBox
 import com.study.cipherbox.sdk.EncryptedSharedPreferencesManager
 import com.study.cipherbox.sdk.ECKeyUtil
+import com.study.cipherbox.vm.KeyViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var cipherBox: CipherBox
     private lateinit var keyId: String
     private lateinit var espm: EncryptedSharedPreferencesManager
+
+    private val viewModel: KeyViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,20 +34,14 @@ class MainActivity : AppCompatActivity() {
 
                 isECKey()
                 getKeyListOnESP()
-                getPublicKey()
+
+                viewModel.getPublicKey()
+                viewModel.publicKey.observe(this) { publicKey ->
+                    binding.publicKeyTextView.text = publicKey
+                }
             } else {
                 Toast.makeText(this, "API 31 이상 사용 가능", Toast.LENGTH_SHORT).show()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun getPublicKey() {
-        try {
-            val _publicKey = cipherBox.getECPublicKey()
-            val publicKey = ECKeyUtil.publicKeyToString(_publicKey)
-            binding.publicKeyTextView.text = publicKey
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -73,7 +72,6 @@ class MainActivity : AppCompatActivity() {
 
     fun onGenerateECKeyPair() {
         try {
-            getPublicKey()
             cipherBox.generateECKeyPair()
             binding.keyAgreementButton.isEnabled = true
         } catch (e: Exception) {
@@ -100,6 +98,7 @@ class MainActivity : AppCompatActivity() {
     fun onReset() {
         try {
             cipherBox.reset()
+            viewModel.reset()
             binding.keyAgreementButton.isEnabled = false
         } catch (e: Exception) {
             e.printStackTrace()
