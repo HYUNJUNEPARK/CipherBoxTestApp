@@ -14,9 +14,9 @@ class KeyViewModel: ViewModel() {
         get() = _publicKey
     private var _publicKey = MutableLiveData<String>()
 
-    val espKeyList: LiveData<String>
+    val espKeyList: LiveData<String?>
         get() = _espKeyList
-    private var _espKeyList = MutableLiveData<String>()
+    private var _espKeyList = MutableLiveData<String?>()
 
     fun getPublicKey() {
         try {
@@ -38,6 +38,7 @@ class KeyViewModel: ViewModel() {
                 for (keyId in keyIdList!!) {
                     keyIds.append("$keyId\n")
                 }
+                //_espKeyList.value = null
                 _espKeyList.value = keyIds.toString()
             }
         } catch (e: Exception) {

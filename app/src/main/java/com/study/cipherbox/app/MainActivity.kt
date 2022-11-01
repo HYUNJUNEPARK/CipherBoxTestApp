@@ -20,10 +20,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /*
-        TODO 옵저빙이 안됨
-         */
-
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 binding = DataBindingUtil.setContentView(this, R.layout.activity_main)

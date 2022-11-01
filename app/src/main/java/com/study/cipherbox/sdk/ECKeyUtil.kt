@@ -1,7 +1,9 @@
 package com.study.cipherbox.sdk
 
+import android.os.Build
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import androidx.annotation.RequiresApi
 import java.math.BigInteger
 import java.security.AlgorithmParameters
 import java.security.KeyFactory
@@ -15,8 +17,33 @@ object ECKeyUtil {
         try {
             val _publicKey = Base64.decode(publicKey, Base64.NO_WRAP)
             val publicKeySpec = X509EncodedKeySpec(_publicKey)
-            val publicKey = KeyFactory.getInstance("EC").generatePublic(publicKeySpec)
+
+            val publicKey = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC).generatePublic(publicKeySpec)
             return publicKey
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    //Temp Method
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun _stringToPublicKey(publicKey: String): PublicKey? {
+        try {
+            val _publicKey = publicKey
+            val encoded: ByteArray = java.util.Base64.getDecoder().decode(_publicKey)
+            // val _encoded: ByteArray = Base64.decode(_publicKey, Base64.NO_WRAP)
+
+            val keyFactory = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC)
+            val templateForECPublicKey = byteArrayOf(
+                0x30, 0x59,
+                0x30, 0x13,
+                0x06, 0x07, 0x2A, 0x86.toByte(), 0x48, 0xCE.toByte(), 0x3D, 0x02, 0x01,
+                0x06, 0x08, 0x2A, 0x86.toByte(), 0x48, 0xCE.toByte(), 0x3D, 0x03, 0x01, 0x07,
+                0x03, 0x42, 0x00
+            )
+            val keySpec = X509EncodedKeySpec(templateForECPublicKey + encoded)
+            return keyFactory.generatePublic(keySpec) as ECPublicKey
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -28,8 +55,7 @@ object ECKeyUtil {
             //publicKey -> byte
             val _publicKey: ByteArray = publicKey.encoded
             //byte -> string
-            val publicKey: String = Base64.encodeToString(_publicKey, Base64.NO_WRAP)
-            return publicKey
+            return Base64.encodeToString(_publicKey, Base64.NO_WRAP)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -49,6 +75,7 @@ object ECKeyUtil {
 
     //affineX, affineY 로 공개키 생성
     //ecParameterSpec 를 사용하지 않아도 됨
+    //_deriveECPublicKeyFromECPoint 개선 메서드
     private fun deriveECPublicKeyFromECPoint(affineX: String, affineY: String): ECPublicKey? {
         val affineX = BigInteger(affineX, 16)
         val affineY = BigInteger(affineY, 16)
