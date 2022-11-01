@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
     fun onGenerateECKeyPair() {
         try {
             cipherBox.generateECKeyPair()
+            viewModel.getPublicKey()
             binding.keyAgreementButton.isEnabled = true
         } catch (e: Exception) {
             e.printStackTrace()
@@ -74,6 +75,8 @@ class MainActivity : AppCompatActivity() {
                 nonce = keyId
             )
 
+            viewModel.getESPKeyIdList(this)
+
             binding.keyIdTextView.text = keyId
             binding.sendButton.isEnabled = true
         } catch (e: Exception) {
@@ -86,6 +89,7 @@ class MainActivity : AppCompatActivity() {
             cipherBox.reset()
             viewModel.reset()
             binding.keyAgreementButton.isEnabled = false
+            binding.keyIdTextView.text = null
         } catch (e: Exception) {
             e.printStackTrace()
         }

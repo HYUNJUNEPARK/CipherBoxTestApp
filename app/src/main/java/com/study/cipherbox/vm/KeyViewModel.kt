@@ -1,7 +1,6 @@
 package com.study.cipherbox.vm
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,9 +9,9 @@ import com.study.cipherbox.sdk.ECKeyUtil
 import com.study.cipherbox.sdk.EncryptedSharedPreferencesManager
 
 class KeyViewModel: ViewModel() {
-    val publicKey: LiveData<String>
+    val publicKey: LiveData<String?>
         get() = _publicKey
-    private var _publicKey = MutableLiveData<String>()
+    private var _publicKey = MutableLiveData<String?>()
 
     val espKeyList: LiveData<String?>
         get() = _espKeyList
@@ -47,6 +46,6 @@ class KeyViewModel: ViewModel() {
     }
 
     fun reset() {
-        //_publicKey.value = null
+        _publicKey.value = null
     }
 }
