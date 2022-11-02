@@ -1,4 +1,4 @@
-package com.study.cipherbox.sdk
+package com.study.cipherbox.sdk.aos
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -13,7 +13,7 @@ class EncryptedSharedPreferencesManager {
         private lateinit var prefs: SharedPreferences
         private lateinit var prefsEditor: SharedPreferences.Editor
 
-        fun getInstance(_context: Context):EncryptedSharedPreferencesManager? {
+        fun getInstance(_context: Context): EncryptedSharedPreferencesManager? {
             if (instance == null) {
                 context = _context
                 instance = EncryptedSharedPreferencesManager()

@@ -1,4 +1,4 @@
-package com.study.cipherbox.sdk.test;
+package com.study.cipherbox.sdk;
 
 import androidx.annotation.NonNull;
 
@@ -14,7 +14,7 @@ if (_affineX[0].equals(0)) {
     val affineY = JavaUtil.byteArrayToString(_affineY, 0)
 }
 */
-public class JavaLibUtil {
+public class JavaUtil {
     private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
 
     public static String byteArrayToString(@NonNull byte[] bytes) {

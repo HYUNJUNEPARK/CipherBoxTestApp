@@ -1,12 +1,12 @@
-package com.study.cipherbox.vm
+package com.study.cipherbox.app
 
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.study.cipherbox.sdk.CipherBox
-import com.study.cipherbox.sdk.ECKeyUtil
-import com.study.cipherbox.sdk.EncryptedSharedPreferencesManager
+import com.study.cipherbox.sdk.aos.CipherBox
+import com.study.cipherbox.sdk.aos.ECKeyUtil
+import com.study.cipherbox.sdk.aos.EncryptedSharedPreferencesManager
 
 class KeyViewModel: ViewModel() {
     val publicKey: LiveData<String?>
@@ -20,8 +20,11 @@ class KeyViewModel: ViewModel() {
     fun getPublicKey() {
         try {
             val cipherBox = CipherBox()
+            if (cipherBox.getECPublicKey() == null) {
+                return
+            }
             _publicKey.value = ECKeyUtil.publicKeyToString(
-                publicKey = cipherBox.getECPublicKey()
+                publicKey = cipherBox.getECPublicKey()!!
             )
         } catch (e: Exception) {
             e.printStackTrace()

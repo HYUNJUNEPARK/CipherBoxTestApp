@@ -8,8 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.study.cipherbox.R
 import com.study.cipherbox.databinding.ActivityMainBinding
-import com.study.cipherbox.sdk.CipherBox
-import com.study.cipherbox.vm.KeyViewModel
+import com.study.cipherbox.sdk.aos.CipherBox
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -68,10 +67,15 @@ class MainActivity : AppCompatActivity() {
 
     fun onAgreementKey() {
         try {
-            keyId = cipherBox.generateRandom(32)
+            keyId = cipherBox.generateRandom(32)!!
 
+            if (cipherBox.getECPublicKey() == null) {
+                Toast.makeText(this, "Empty Keystore", Toast.LENGTH_SHORT).show()
+                return
+            }
+            
             cipherBox.generateSharedSecretKey(
-                publicKey = cipherBox.getECPublicKey(),
+                publicKey = cipherBox.getECPublicKey()!!,
                 nonce = keyId
             )
 
@@ -99,7 +103,8 @@ class MainActivity : AppCompatActivity() {
         try {
             val message = binding.messageEditText.text.toString()
             val encryptedMsg = cipherBox.encrypt(message, keyId)
-            val decryptedMsg = cipherBox.decrypt(encryptedMsg, keyId)
+            //TODO null Point Exception UI Control
+            val decryptedMsg = cipherBox.decrypt(encryptedMsg!!, keyId)
 
             binding.userMessageTextView.text = message
             binding.encryptionCBCTextView.text = encryptedMsg

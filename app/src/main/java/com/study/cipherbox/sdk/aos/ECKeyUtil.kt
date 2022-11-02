@@ -1,4 +1,4 @@
-package com.study.cipherbox.sdk
+package com.study.cipherbox.sdk.aos
 
 import android.os.Build
 import android.security.keystore.KeyProperties

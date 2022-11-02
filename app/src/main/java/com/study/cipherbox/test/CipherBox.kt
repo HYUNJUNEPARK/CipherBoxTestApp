@@ -1,10 +1,10 @@
-package com.study.cipherbox.sdk.test
+package com.study.cipherbox.test
 
 import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import com.study.cipherbox.sdk.EncryptedSharedPreferencesManager
+import com.study.cipherbox.sdk.aos.EncryptedSharedPreferencesManager
 import java.security.*
 import java.security.spec.ECGenParameterSpec
 import javax.crypto.KeyAgreement
