@@ -1,9 +1,11 @@
 package com.study.cipherbox.app
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.study.cipherbox.sdk.JavaUtil
 import com.study.cipherbox.sdk.aos.CipherBox
 import com.study.cipherbox.sdk.aos.ECKeyUtil
 import com.study.cipherbox.sdk.aos.EncryptedSharedPreferencesManager
@@ -23,9 +25,23 @@ class KeyViewModel: ViewModel() {
             if (cipherBox.getECPublicKey() == null) {
                 return
             }
-            _publicKey.value = ECKeyUtil.publicKeyToString(
-                publicKey = cipherBox.getECPublicKey()!!
-            )
+            _publicKey.value = cipherBox.getECPublicKey()!!
+
+
+            ////////////////
+
+
+            val publicKey = cipherBox.getECPublicKey()!!
+            //val publicKey_str = ECKeyUtil.publicKeyToString(publicKey)
+
+            //Log.d("testLog", "getPublicKey: $publicKey // $publicKey_str")
+
+
+            //java.lang.IllegalArgumentException: Non-hexadecimal digit found: G
+            //val publicKey_byte = JavaUtil.hexStringToByteArray(publicKey_str!!)
+            //Log.d("testLog", "getPublicKey: $publicKey_byte")
+
+
         } catch (e: Exception) {
             e.printStackTrace()
         }

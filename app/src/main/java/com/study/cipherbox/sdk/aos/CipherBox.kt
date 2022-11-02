@@ -5,7 +5,9 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import java.security.*
+import java.security.interfaces.ECPublicKey
 import java.security.spec.ECGenParameterSpec
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyAgreement
 import javax.crypto.spec.IvParameterSpec
@@ -62,18 +64,29 @@ class CipherBox {
         }
     }
 
-    fun getECPublicKey(): PublicKey? {
+    fun getECPublicKey(): String? {
         try {
-            return androidKeyStore.getCertificate(defaultKeyStoreAlias).publicKey
+            val publicKey = androidKeyStore.getCertificate(defaultKeyStoreAlias).publicKey as ECPublicKey
+
+            val _affineX = publicKey.w.affineX.toByteArray()
+            val _affineY = publicKey.w.affineY.toByteArray();
+
+            // TODO: check length
+            val baEcPublicKey = byteArrayOf(0x04) + _affineX + _affineY
+
+            return Base64.encodeToString(baEcPublicKey, Base64.NO_WRAP)
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return null
     }
 
-    fun generateSharedSecretKey(publicKey: PublicKey, nonce: String): String? {
+    fun generateSharedSecretKey(publicKey: String, nonce: String): String? {
         try {
             val keyId: String = nonce
+            val baECPublicKey = Base64.decode(publicKey, Base64.NO_WRAP)
+            val ecPublicKey = ECKeyUtil.deriveECPublicKeyFromECPoint(baECPublicKey)
+
             val random: ByteArray = Base64.decode(nonce, Base64.NO_WRAP)
             val privateKey: PrivateKey
             androidKeyStore.getEntry(defaultKeyStoreAlias, null).let { keyStoreEntry ->
@@ -82,7 +95,7 @@ class CipherBox {
             var sharedSecretKey: String
             KeyAgreement.getInstance("ECDH").apply {
                 init(privateKey)
-                doPhase(publicKey, true)
+                doPhase(ecPublicKey, true)
             }.generateSecret().let { _sharedSecret ->
                 val messageDigest = MessageDigest.getInstance(KeyProperties.DIGEST_SHA256).apply {
                     update(_sharedSecret)
