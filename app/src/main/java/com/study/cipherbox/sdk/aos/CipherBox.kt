@@ -4,8 +4,12 @@ import android.content.Context
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import com.study.cipherbox.sdk.JavaUtil
+import java.math.BigInteger
 import java.security.*
-import java.security.spec.ECGenParameterSpec
+import java.security.interfaces.ECPublicKey
+import java.security.spec.*
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyAgreement
 import javax.crypto.spec.IvParameterSpec
@@ -36,7 +40,7 @@ class CipherBox {
     }
 
     //CBC(Cipher Block Chaining)Mode 에서 첫번째 암호문 대신 사용되는 IV(Initial Vector)로 0으로 초기화되어 있음
-    private val iv: ByteArray = ByteArray(16)
+    //private val iv: ByteArray = ByteArray(16)
 
     //AndroidAPI 31 이상 사용 가능
     fun generateECKeyPair() {
@@ -62,18 +66,43 @@ class CipherBox {
         }
     }
 
-    fun getECPublicKey(): PublicKey? {
+    fun getECPublicKey(): String? {
         try {
-            return androidKeyStore.getCertificate(defaultKeyStoreAlias).publicKey
+            val publicKey = androidKeyStore.getCertificate(defaultKeyStoreAlias).publicKey as ECPublicKey
+
+            //첫번째 인덱스의 숫자가 0인 경우, 맨 앞 인덱스에 0 이 추가되어 byte[33]이 나오게 됨
+            //이런 경우 불필요한 인덱스를 잘라내 byte[32] 를 맞춰주는 작업
+            val _affineX = publicKey.w.affineX.toByteArray()
+            val _affineY = publicKey.w.affineY.toByteArray()
+            val affineX: ByteArray = if (_affineX[0] == 0.toByte()) {
+                Arrays.copyOfRange(_affineX, 1, 33)
+            } else {
+                Arrays.copyOfRange(_affineX, 0, 32)
+            }
+            val affineY: ByteArray = if (_affineY[0] == 0.toByte()) {
+                Arrays.copyOfRange(_affineY, 1, 33)
+            } else {
+                Arrays.copyOfRange(_affineY, 0, 32)
+            }
+
+            //PublicKey Uncompressed Form
+            //byte[65] = [0x04][affineX(32byte)][affineY(32byte)]
+            val ecPublicKey: ByteArray = byteArrayOf(0x04) + affineX + affineY
+
+            //ByteArray -> String
+            return Base64.encodeToString(ecPublicKey, Base64.NO_WRAP)
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return null
     }
 
-    fun generateSharedSecretKey(publicKey: PublicKey, nonce: String): String? {
+    //공유키를 생성 및 ESP 저장 후 키 식별자(keyId)를 반환
+    fun generateSharedSecretKey(publicKey: String, nonce: String): String? {
         try {
             val keyId: String = nonce
+            val ecPublicKey: ByteArray = Base64.decode(publicKey, Base64.NO_WRAP)
+            val publicKey: PublicKey = byteArrayToString(ecPublicKey)!!
             val random: ByteArray = Base64.decode(nonce, Base64.NO_WRAP)
             val privateKey: PrivateKey
             androidKeyStore.getEntry(defaultKeyStoreAlias, null).let { keyStoreEntry ->
@@ -144,7 +173,7 @@ class CipherBox {
     fun encrypt(message: String, keyId: String): String? {
         try {
             val iv = ByteArray(16)
-            var encodedSharedSecretKey: String? =
+            val encodedSharedSecretKey: String? =
                 if (espm.getString(keyId, "") == "") {
                     null
                 }
@@ -181,7 +210,7 @@ class CipherBox {
     fun decrypt(message: String, keyId: String): String? {
         try {
             val iv = ByteArray(16)
-            var encodedSharedSecretKey: String? = espm.getString(keyId, "").ifEmpty { null }
+            val encodedSharedSecretKey: String? = espm.getString(keyId, "").ifEmpty { null }
             var decryptedMessage: ByteArray
             Base64.decode(encodedSharedSecretKey, Base64.NO_WRAP).let { decodedKey ->
                 SecretKeySpec(
@@ -208,7 +237,7 @@ class CipherBox {
         return null
     }
 
-    fun isECKeyPair(): Boolean {
+    fun isECKeyPairOnKeyStore(): Boolean {
         try {
             val keyStoreEntry: KeyStore.Entry? = androidKeyStore.getEntry(defaultKeyStoreAlias, null)
             return keyStoreEntry != null
@@ -216,5 +245,30 @@ class CipherBox {
             e.printStackTrace()
         }
         return false
+    }
+
+    private fun byteArrayToString(keyArray: ByteArray): PublicKey? {
+        try {
+            val _affineX = JavaUtil.byteArrayToString(keyArray, 1, 32)
+            val _affineY = JavaUtil.byteArrayToString(keyArray, 33, 32)
+            val affineX = BigInteger(_affineX, 16)
+            val affineY = BigInteger(_affineY, 16)
+            val point = ECPoint(affineX, affineY)
+            val algorithmParameters: AlgorithmParameters = AlgorithmParameters.getInstance(KeyProperties.KEY_ALGORITHM_EC)
+            algorithmParameters.init(ECGenParameterSpec("secp256r1"))
+            val parameterSpec: ECParameterSpec =
+                algorithmParameters.getParameterSpec(ECParameterSpec::class.java)
+            val publicKeySpec: KeySpec = ECPublicKeySpec(point, parameterSpec)
+            return KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC).generatePublic(publicKeySpec) as ECPublicKey
+        } catch (e: NoSuchAlgorithmException) {
+            e.printStackTrace()
+        } catch (e: InvalidParameterSpecException) {
+            e.printStackTrace()
+        } catch (e: InvalidKeySpecException) {
+            e.printStackTrace()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 }

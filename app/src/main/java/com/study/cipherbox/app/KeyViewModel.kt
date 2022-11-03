@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.study.cipherbox.sdk.aos.CipherBox
-import com.study.cipherbox.sdk.aos.ECKeyUtil
 import com.study.cipherbox.sdk.aos.EncryptedSharedPreferencesManager
 
 class KeyViewModel: ViewModel() {
@@ -23,9 +22,7 @@ class KeyViewModel: ViewModel() {
             if (cipherBox.getECPublicKey() == null) {
                 return
             }
-            _publicKey.value = ECKeyUtil.publicKeyToString(
-                publicKey = cipherBox.getECPublicKey()!!
-            )
+            _publicKey.value = cipherBox.getECPublicKey()!!
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -40,7 +37,6 @@ class KeyViewModel: ViewModel() {
                 for (keyId in keyIdList!!) {
                     keyIds.append("$keyId\n")
                 }
-                //_espKeyList.value = null
                 _espKeyList.value = keyIds.toString()
             }
         } catch (e: Exception) {

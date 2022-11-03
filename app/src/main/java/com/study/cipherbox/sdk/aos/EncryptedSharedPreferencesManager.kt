@@ -87,7 +87,7 @@ class EncryptedSharedPreferencesManager {
         }
     }
 
-    fun getKeyIdList(): List<String>? {
+    fun getKeyIdList(): List<String> {
         val keys:Map<String, *> = prefs.all
         val keyList:MutableList<String> = mutableListOf()
         for ((key, value) in keys.entries) {
