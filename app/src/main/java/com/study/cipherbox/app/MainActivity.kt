@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
                 cipherBox = CipherBox.getInstance(this)!!
                 binding.mainActivity = this
 
-                isECKeyPair()
+                isECKeyPairOnKeyStore()
 
                 viewModel.getPublicKey()
                 viewModel.getESPKeyIdList(this)
@@ -47,9 +47,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     //ECKeyPair 가 키스토어에 있다면 Agreement 버튼 활성화
-    private fun isECKeyPair() {
+    private fun isECKeyPairOnKeyStore() {
         try {
-            binding.keyAgreementButton.isEnabled = cipherBox.isECKeyPair()
+            binding.keyAgreementButton.isEnabled = cipherBox.isECKeyPairOnKeyStore()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -103,7 +103,6 @@ class MainActivity : AppCompatActivity() {
         try {
             val message = binding.messageEditText.text.toString()
             val encryptedMsg = cipherBox.encrypt(message, keyId)
-            //TODO null Point Exception UI Control
             val decryptedMsg = cipherBox.decrypt(encryptedMsg!!, keyId)
 
             binding.userMessageTextView.text = message
