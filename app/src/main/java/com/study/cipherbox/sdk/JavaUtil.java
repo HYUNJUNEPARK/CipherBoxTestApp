@@ -2,18 +2,6 @@ package com.study.cipherbox.sdk;
 
 import androidx.annotation.NonNull;
 
-//affineX, affineY BigInteger 10진법 -> 16진법 변환 시 사용
-
-/*
-Example
-if (_affineX[0].equals(0)) {
-    val affineX = JavaUtil.byteArrayToString(_affineX, 1)
-    val affineY = JavaUtil.byteArrayToString(_affineY, 1)
-} else {
-    val affineX = JavaUtil.byteArrayToString(_affineX, 0)
-    val affineY = JavaUtil.byteArrayToString(_affineY, 0)
-}
-*/
 public class JavaUtil {
     private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
 
