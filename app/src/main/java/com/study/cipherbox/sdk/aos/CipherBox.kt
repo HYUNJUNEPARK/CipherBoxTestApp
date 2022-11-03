@@ -7,7 +7,6 @@ import android.util.Base64
 import java.security.*
 import java.security.interfaces.ECPublicKey
 import java.security.spec.ECGenParameterSpec
-import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyAgreement
 import javax.crypto.spec.IvParameterSpec
@@ -92,6 +91,7 @@ class CipherBox {
             androidKeyStore.getEntry(defaultKeyStoreAlias, null).let { keyStoreEntry ->
                 privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
             }
+
             var sharedSecretKey: String
             KeyAgreement.getInstance("ECDH").apply {
                 init(privateKey)

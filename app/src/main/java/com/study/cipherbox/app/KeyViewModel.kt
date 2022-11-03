@@ -28,20 +28,13 @@ class KeyViewModel: ViewModel() {
             _publicKey.value = cipherBox.getECPublicKey()!!
 
 
-            ////////////////
-
 
             val publicKey = cipherBox.getECPublicKey()!!
             //val publicKey_str = ECKeyUtil.publicKeyToString(publicKey)
-
             //Log.d("testLog", "getPublicKey: $publicKey // $publicKey_str")
-
-
             //java.lang.IllegalArgumentException: Non-hexadecimal digit found: G
             //val publicKey_byte = JavaUtil.hexStringToByteArray(publicKey_str!!)
             //Log.d("testLog", "getPublicKey: $publicKey_byte")
-
-
         } catch (e: Exception) {
             e.printStackTrace()
         }

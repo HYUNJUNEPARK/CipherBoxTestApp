@@ -26,25 +26,17 @@ object ECKeyUtil {
 //            e.printStackTrace()
 //        }
 //        return null
-
-
         try {
 //            val _publicKey = Base64.decode(publicKey, Base64.NO_WRAP)
 //            val publicKeySpec = X509EncodedKeySpec(_publicKey)
 //
 //            val publicKey = KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC).generatePublic(publicKeySpec)
 //            return publicKey
-
             return Base64.decode(publicKey, Base64.NO_WRAP)
-
-
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
         return null
-
-
     }
 
     //Temp Method
@@ -112,14 +104,28 @@ object ECKeyUtil {
             // bytes[32 .. 64]: affineY
 
             //TODO NEED Detail option
-            val affineX = JavaUtil.byteArrayToString(uncompressedForm_bytes, 1, 32)
-            val affineY = JavaUtil.byteArrayToString(uncompressedForm_bytes, 32, 32)
+            //TODO
+            //bytes
+            if (uncompressedForm_bytes[0].equals(0)) {
+                val affineX = JavaUtil.byteArrayToString(uncompressedForm_bytes, 1, 32)
+                val affineY = JavaUtil.byteArrayToString(uncompressedForm_bytes, 32, 32)
 
-            return hashMapOf(
-                "userId" to userId,
-                "affineX" to affineX,
-                "affineY" to affineY
-            )
+                return hashMapOf(
+                    "userId" to userId,
+                    "affineX" to affineX,
+                    "affineY" to affineY
+                )
+            }
+            else {
+                val affineX = JavaUtil.byteArrayToString(uncompressedForm_bytes, 1, 32)
+                val affineY = JavaUtil.byteArrayToString(uncompressedForm_bytes, 32, 32)
+
+                return hashMapOf(
+                    "userId" to userId,
+                    "affineX" to affineX,
+                    "affineY" to affineY
+                )
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
