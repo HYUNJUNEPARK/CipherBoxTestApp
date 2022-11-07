@@ -1,9 +1,9 @@
-<img src="" height="400"/>
+**Test App**</br>
+<img src="app/src/ref/app_test_img.png" height="400"/>
 
+**MVVM**</br>
+<img src="app/src/ref/app_architecture_img.png" height="400"/>
 
----
-1. <a href = "#content1">Base64</a></br>
-* <a href = "#ref">참고링크</a>
 ---
 **ECC(Elliptic Curve Cryptography, 타원곡선 암호 기술)** : EC(타원곡선)를 사용한 암호기술의 총체적인 이름</br>
 -ECDSA : 디지털서명 용도</br>
@@ -35,7 +35,7 @@ EC 알고리즘 기반 키페어 생성(private/public key)</br>
 -각 블록이 XOR연산을 통해 이전 암호문과 연산되고 첫번째 암호문에 대해서는 IV가 암호문 대신 상용됨</br>
 <br></br>
 
-><a id = "content1">**1. Base64**</a></br>
+**Base64**</br>
 
 -8비트 이진 데이터를 문자 코드에 영향을 받지 않는 공통 아스키(ASCII(*1)) 영역의 "문자"들로만(*2) 이루어진 일련의 문자열로 바꾸는 인코딩 방식을 가리키는 개념</br>
 -64진법으로 A-Z, a-z, 0-9 총 62개 문자숫자 + 2개의 기호 사용</br>
