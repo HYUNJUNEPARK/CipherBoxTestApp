@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
             } else {
-                Toast.makeText(this, "API 31 이상 사용 가능", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_msg_api_31), Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             keyId = cipherBox.generateRandom(32)!!
 
             if (cipherBox.getECPublicKey() == null) {
-                Toast.makeText(this, "Empty Keystore", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.toast_msg_empty_keystore), Toast.LENGTH_SHORT).show()
                 return
             }
             

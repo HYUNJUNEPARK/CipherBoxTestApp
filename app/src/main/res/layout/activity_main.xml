@@ -31,7 +31,7 @@
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:onClick="@{()->mainActivity.onGenerateECKeyPair()}"
-                android:text="Key Generate"
+                android:text="@string/ui_key_generate"
                 android:textAllCaps="false" />
 
             <TextView
@@ -47,7 +47,7 @@
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:onClick="@{()->mainActivity.onAgreementKey()}"
-                android:text="Key Agreement"
+                android:text="@string/ui_key_agreement"
                 android:textAllCaps="false" />
 
             <TextView
@@ -64,7 +64,7 @@
                 android:minWidth="0dp"
                 android:minHeight="0dp"
                 android:onClick="@{()->mainActivity.onReset()}"
-                android:text="Reset"
+                android:text="@string/ui_reset"
                 android:textAllCaps="false" />
         </LinearLayout>
 
@@ -88,7 +88,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
                     android:ellipsize="end"
-                    android:hint="Input your message"
+                    android:inputType="text"
+                    android:autofillHints="@string/ui_input_your_message"
+                    android:hint="@string/ui_input_your_message"
                     android:maxLines="1"
                     android:textSize="14sp" />
 
@@ -101,14 +103,14 @@
                     android:minWidth="0dp"
                     android:minHeight="0dp"
                     android:onClick="@{()->mainActivity.onSend()}"
-                    android:text="send"
+                    android:text="@string/ui_send"
                     android:textSize="12sp" />
             </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="원본 메시지 :  "
+                android:text="@string/ui_origin_msg"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -116,7 +118,7 @@
                 android:id="@+id/userMessageTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Origin message" />
+                android:text="@string/ui_origin_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -128,7 +130,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="암호화 메시지 [CBC]  :  "
+                android:text="@string/ui_encrypted_msg"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -136,19 +138,19 @@
                 android:id="@+id/encryptionCBCTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Encryption message" />
+                android:text="@string/ui_encryption_message" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="7dp"
                 android:layout_marginBottom="7dp"
-                android:background="#989393" />
+                android:background="@color/gray" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="복호화 메시지 [CBC] :  "
+                android:text="@string/ui_decrypted_msg"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
@@ -156,7 +158,7 @@
                 android:id="@+id/decryptionCBCTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Decryption message" />
+                android:text="@string/ui_decryption_message" />
 
             <View
                 android:layout_width="match_parent"
@@ -166,22 +168,30 @@
                 android:background="#989393" />
         </LinearLayout>
 
-        <LinearLayout
+
+        <ScrollView
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/messageLayout"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical">
-            <ScrollView
+            android:layout_height="0dp">
+            <TextView
+                android:id="@+id/publicKeyIdTextView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/publicKeyIdTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </ScrollView>
-        </LinearLayout>
+                android:layout_height="wrap_content"/>
+        </ScrollView>
+
+
+<!--        <LinearLayout-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/messageLayout"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:orientation="vertical">-->
+<!--        </LinearLayout>-->
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

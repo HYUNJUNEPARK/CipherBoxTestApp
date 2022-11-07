@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">CipherBoxTestApp</string>
+    <string name="toast_msg_api_31">API 31 이상 사용 가능</string>
+    <string name="toast_msg_empty_keystore">Empty Keystore</string>
+    <string name="ui_send">send</string>
+    <string name="ui_key_generate">Key Generate</string>
+    <string name="ui_key_agreement">Key Agreement</string>
+    <string name="ui_reset">Reset</string>
+    <string name="ui_input_your_message">Input your message</string>
+    <string name="ui_origin_msg">원본 메시지 :</string>
+    <string name="ui_encrypted_msg">암호화 메시지 :</string>
+    <string name="ui_encryption_message">Encryption message</string>
+    <string name="ui_decrypted_msg">복호화 메시지 :</string>
+    <string name="ui_decryption_message">Decryption message</string>
+    <string name="ui_origin_message">Origin message</string>
 </resources>
