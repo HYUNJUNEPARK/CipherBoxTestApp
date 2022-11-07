@@ -1,9 +1,11 @@
 package com.study.cipherbox.sdk.aos
 
 import android.content.Context
+import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import androidx.annotation.RequiresApi
 import com.study.cipherbox.sdk.JavaUtil
 import java.math.BigInteger
 import java.security.*
@@ -43,6 +45,7 @@ class CipherBox {
     //private val iv: ByteArray = ByteArray(16)
 
     //AndroidAPI 31 이상 사용 가능
+    @RequiresApi(Build.VERSION_CODES.S)
     fun generateECKeyPair() {
         try {
             val keyPairGenerator = KeyPairGenerator.getInstance(
@@ -102,16 +105,16 @@ class CipherBox {
         try {
             val keyId: String = nonce
             val ecPublicKey: ByteArray = Base64.decode(publicKey, Base64.NO_WRAP)
-            val publicKey: PublicKey = byteArrayToString(ecPublicKey)!!
+            val friendPublicKey: PublicKey = byteArrayToString(ecPublicKey)!!
             val random: ByteArray = Base64.decode(nonce, Base64.NO_WRAP)
-            val privateKey: PrivateKey
+            val myPrivateKey: PrivateKey
             androidKeyStore.getEntry(defaultKeyStoreAlias, null).let { keyStoreEntry ->
-                privateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
+                myPrivateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
             }
             var sharedSecretKey: String
             KeyAgreement.getInstance("ECDH").apply {
-                init(privateKey)
-                doPhase(publicKey, true)
+                init(myPrivateKey)
+                doPhase(friendPublicKey, true)
             }.generateSecret().let { _sharedSecret ->
                 val messageDigest = MessageDigest.getInstance(KeyProperties.DIGEST_SHA256).apply {
                     update(_sharedSecret)

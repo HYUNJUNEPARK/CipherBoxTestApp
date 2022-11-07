@@ -4,17 +4,15 @@ import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.study.cipherbox.R
 import com.study.cipherbox.databinding.ActivityMainBinding
-import com.study.cipherbox.sdk.aos.CipherBox
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private lateinit var cipherBox: CipherBox
-    private lateinit var keyId: String
-    private val viewModel: KeyViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,22 +20,20 @@ class MainActivity : AppCompatActivity() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-                cipherBox = CipherBox.getInstance(this)!!
                 binding.mainActivity = this
 
-                isECKeyPairOnKeyStore()
-
-                viewModel.getPublicKey()
-                viewModel.getESPKeyIdList(this)
-
+                viewModel.init().let { result ->
+                    binding.keyAgreementButton.isEnabled = result
+                }
                 viewModel.publicKey.observe(this) { publicKey ->
                     binding.publicKeyTextView.text = publicKey
                 }
-
                 viewModel.espKeyList.observe(this) { keyIdList ->
                     binding.publicKeyIdTextView.text = keyIdList.toString()
                 }
-
+                viewModel.currentSharedSecretKeyId.observe(this) { currentKeyId ->
+                    binding.keyIdTextView.text = currentKeyId
+                }
             } else {
                 Toast.makeText(this, getString(R.string.toast_msg_api_31), Toast.LENGTH_SHORT).show()
             }
@@ -46,20 +42,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //ECKeyPair 가 키스토어에 있다면 Agreement 버튼 활성화
-    private fun isECKeyPairOnKeyStore() {
-        try {
-            binding.keyAgreementButton.isEnabled = cipherBox.isECKeyPairOnKeyStore()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
+    @RequiresApi(Build.VERSION_CODES.S)
     fun onGenerateECKeyPair() {
         try {
-            cipherBox.generateECKeyPair()
-            viewModel.getPublicKey()
-            binding.keyAgreementButton.isEnabled = true
+            viewModel.generateECKeyPair().let { result ->
+                binding.keyAgreementButton.isEnabled = result
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -67,22 +55,9 @@ class MainActivity : AppCompatActivity() {
 
     fun onAgreementKey() {
         try {
-            keyId = cipherBox.generateRandom(32)!!
-
-            if (cipherBox.getECPublicKey() == null) {
-                Toast.makeText(this, getString(R.string.toast_msg_empty_keystore), Toast.LENGTH_SHORT).show()
-                return
+            viewModel.generateSharedSecretKey().let { result ->
+                binding.sendButton.isEnabled = result
             }
-            
-            cipherBox.generateSharedSecretKey(
-                publicKey = cipherBox.getECPublicKey()!!,
-                nonce = keyId
-            )
-
-            viewModel.getESPKeyIdList(this)
-
-            binding.keyIdTextView.text = keyId
-            binding.sendButton.isEnabled = true
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -90,7 +65,6 @@ class MainActivity : AppCompatActivity() {
 
     fun onReset() {
         try {
-            cipherBox.reset()
             viewModel.reset()
             binding.keyAgreementButton.isEnabled = false
             binding.keyIdTextView.text = null
@@ -102,13 +76,24 @@ class MainActivity : AppCompatActivity() {
     fun onSend() {
         try {
             val message = binding.messageEditText.text.toString()
-            val encryptedMsg = cipherBox.encrypt(message, keyId)
-            val decryptedMsg = cipherBox.decrypt(encryptedMsg!!, keyId)
-
             binding.userMessageTextView.text = message
-            binding.encryptionCBCTextView.text = encryptedMsg
-            binding.decryptionCBCTextView.text = decryptedMsg
 
+            viewModel.encrypt(message).let { encryptedMsg ->
+                if (encryptedMsg == null) {
+                    //Error Log
+                    binding.encryptionCBCTextView.text = resources.getString(R.string.error_message)
+                    return
+                }
+                binding.encryptionCBCTextView.text = encryptedMsg
+                viewModel.decrypt(encryptedMsg).let { decryptedMsg ->
+                    if (decryptedMsg == null) {
+                        //Error Log
+                        binding.decryptionCBCTextView.text = resources.getString(R.string.error_message)
+                        return
+                    }
+                    binding.decryptionCBCTextView.text = decryptedMsg
+                }
+            }
             binding.messageEditText.text = null
         } catch (e: Exception) {
             e.printStackTrace()

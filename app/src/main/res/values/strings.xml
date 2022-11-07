@@ -13,4 +13,5 @@
     <string name="ui_decrypted_msg">복호화 메시지 :</string>
     <string name="ui_decryption_message">Decryption message</string>
     <string name="ui_origin_message">Origin message</string>
+    <string name="error_message">Error</string>
 </resources>
