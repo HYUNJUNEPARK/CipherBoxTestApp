@@ -1,5 +1,4 @@
-<img src="https://github.com/HYUNJUNEPARK/ImageRepository/blob/master/AES/AESModule.png" height="400"/>
-
+<img src="" height="400"/>
 
 
 ---
@@ -94,3 +93,6 @@ https://stackoverflow.com/questions/33477025/how-to-set-a-ripple-effect-on-textv
 
 SharedPreferences 간단하게 사용하기 (Kotlin)</br>
 https://leveloper.tistory.com/133</br>
+
+ViewModel 에서 context 필요로 할 때 해결방법</br>
+https://youngest-programming.tistory.com/327</br>
