@@ -22,34 +22,21 @@ class MainActivity : AppCompatActivity() {
                 binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
                 binding.mainActivity = this
 
-                isECKeyPairOnKeyStore()
-
-                viewModel.getPublicKey()
-                viewModel.getESPKeyIdList(this)
-
+                viewModel.init().let { result ->
+                    binding.keyAgreementButton.isEnabled = result
+                }
                 viewModel.publicKey.observe(this) { publicKey ->
                     binding.publicKeyTextView.text = publicKey
                 }
-
                 viewModel.espKeyList.observe(this) { keyIdList ->
                     binding.publicKeyIdTextView.text = keyIdList.toString()
                 }
-
                 viewModel.currentSharedSecretKeyId.observe(this) { currentKeyId ->
                     binding.keyIdTextView.text = currentKeyId
                 }
             } else {
                 Toast.makeText(this, getString(R.string.toast_msg_api_31), Toast.LENGTH_SHORT).show()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    //ECKeyPair 가 키스토어에 있다면 Agreement 버튼 활성화
-    private fun isECKeyPairOnKeyStore() {
-        try {
-            binding.keyAgreementButton.isEnabled =viewModel.isECKeyPairOnKeyStore()
         } catch (e: Exception) {
             e.printStackTrace()
         }

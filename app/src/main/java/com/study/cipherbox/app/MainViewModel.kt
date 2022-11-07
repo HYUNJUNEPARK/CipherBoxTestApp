@@ -3,7 +3,6 @@ package com.study.cipherbox.app
 import android.app.Application
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -27,34 +26,17 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         get() = _currentSharedSecretKeyId
     private var _currentSharedSecretKeyId = MutableLiveData<String?>()
 
-
-
-    fun getPublicKey() {
+    fun init(): Boolean {
         try {
-            val cipherBox = CipherBox()
-            if (cipherBox.getECPublicKey() == null) {
-                return
-            }
-            _publicKey.value = cipherBox.getECPublicKey()!!
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun getESPKeyIdList(context: Context) {
-        try {
-            val espm = EncryptedSharedPreferencesManager.getInstance(context)!!
-            espm.getKeyIdList().let {
-                    keyIdList ->
-                val keyIds = StringBuffer("")
-                for (keyId in keyIdList) {
-                    keyIds.append("$keyId\n")
-                }
-                _espKeyList.value = keyIds.toString()
+            getPublicKey()
+            getESPKeyIdList(context)
+            isECKeyPairOnKeyStore().let {
+                return true
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        return false
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -69,27 +51,26 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         return false
     }
 
-
-    fun isECKeyPairOnKeyStore(): Boolean {
-        try {
-            return cipherBox.isECKeyPairOnKeyStore()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return false
-    }
-
     fun reset() {
         cipherBox.reset()
+        _espKeyList.value = null
         _publicKey.value = null
     }
 
-    fun generateRandom() {
-        try {
-            _currentSharedSecretKeyId.value = cipherBox.generateRandom(32)
-        } catch (e: Exception) {
-            e.printStackTrace()
+    fun encrypt(message: String): String? {
+        if (currentSharedSecretKeyId.value == null) {
+            //Error Log
+            return null
         }
+        return cipherBox.encrypt(message, currentSharedSecretKeyId.value!!)
+    }
+
+    fun decrypt(message: String): String? {
+        if (currentSharedSecretKeyId.value == null) {
+            //Error Log
+            return null
+        }
+        return cipherBox.decrypt(message, currentSharedSecretKeyId.value!!)
     }
 
     fun generateSharedSecretKey(): Boolean {
@@ -110,22 +91,48 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         return false
     }
 
-    fun encrypt(message: String): String? {
-        if (currentSharedSecretKeyId.value == null) {
-            //Error Log
-            return null
+    private fun getPublicKey() {
+        try {
+            val cipherBox = CipherBox()
+            if (cipherBox.getECPublicKey() == null) {
+                return
+            }
+            _publicKey.value = cipherBox.getECPublicKey()!!
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        return cipherBox.encrypt(message, currentSharedSecretKeyId.value!!)
     }
 
-    fun decrypt(message: String): String? {
-        if (currentSharedSecretKeyId.value == null) {
-            //Error Log
-            return null
+    private fun getESPKeyIdList(context: Context) {
+        try {
+            val espm = EncryptedSharedPreferencesManager.getInstance(context)!!
+            espm.getKeyIdList().let {
+                    keyIdList ->
+                val keyIds = StringBuffer("")
+                for (keyId in keyIdList) {
+                    keyIds.append("$keyId\n")
+                }
+                _espKeyList.value = keyIds.toString()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        return cipherBox.decrypt(message, currentSharedSecretKeyId.value!!)
     }
 
+    private fun isECKeyPairOnKeyStore(): Boolean {
+        try {
+            return cipherBox.isECKeyPairOnKeyStore()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
 
-
+    private fun generateRandom() {
+        try {
+            _currentSharedSecretKeyId.value = cipherBox.generateRandom(32)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }
