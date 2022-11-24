@@ -7,12 +7,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.study.cipherbox.sdk.aos.CipherBox
-import com.study.cipherbox.sdk.aos.EncryptedSharedPreferencesManager
+import com.study.cipherbox.sdk.aos.Cipher
+import com.study.cipherbox.sdk.aos.ESPManager
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
     private val context = getApplication<Application>().applicationContext
-    private val cipherBox: CipherBox = CipherBox.getInstance(context)!!
+    private val cipher: Cipher = Cipher.getInstance(context)!!
 
     val publicKey: LiveData<String?>
         get() = _publicKey
@@ -42,7 +42,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     @RequiresApi(Build.VERSION_CODES.S)
     fun generateECKeyPair(): Boolean {
         try {
-            cipherBox.generateECKeyPair()
+            cipher.generateECKeyPair()
             getPublicKey()
             return true
         } catch (e: Exception) {
@@ -52,7 +52,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun reset() {
-        cipherBox.reset()
+        cipher.reset()
         _espKeyList.value = null
         _publicKey.value = null
     }
@@ -62,7 +62,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             //Error Log
             return null
         }
-        return cipherBox.encrypt(message, currentSharedSecretKeyId.value!!)
+        return cipher.encrypt(message, currentSharedSecretKeyId.value!!)
     }
 
     fun decrypt(message: String): String? {
@@ -70,7 +70,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             //Error Log
             return null
         }
-        return cipherBox.decrypt(message, currentSharedSecretKeyId.value!!)
+        return cipher.decrypt(message, currentSharedSecretKeyId.value!!)
     }
 
     fun generateSharedSecretKey(): Boolean {
@@ -78,7 +78,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             //SharedSecreteKey 의 KeyId 와 생성 시 필요한 secureRandom
             generateRandom()
 
-            cipherBox.generateSharedSecretKey(
+            cipher.generateSharedSecretKey(
                 _publicKey.value!!,
                 currentSharedSecretKeyId.value!!
             )
@@ -93,11 +93,11 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private fun getPublicKey() {
         try {
-            val cipherBox = CipherBox()
-            if (cipherBox.getECPublicKey() == null) {
+            val cipher = Cipher()
+            if (cipher.getECPublicKey() == null) {
                 return
             }
-            _publicKey.value = cipherBox.getECPublicKey()!!
+            _publicKey.value = cipher.getECPublicKey()!!
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -105,7 +105,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private fun getESPKeyIdList(context: Context) {
         try {
-            val espm = EncryptedSharedPreferencesManager.getInstance(context)!!
+            val espm = ESPManager.getInstance(context)!!
             espm.getKeyIdList().let {
                     keyIdList ->
                 val keyIds = StringBuffer("")
@@ -121,7 +121,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private fun isECKeyPairOnKeyStore(): Boolean {
         try {
-            return cipherBox.isECKeyPairOnKeyStore()
+            return cipher.isECKeyPairOnKeyStore()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -130,7 +130,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private fun generateRandom() {
         try {
-            _currentSharedSecretKeyId.value = cipherBox.generateRandom(32)
+            _currentSharedSecretKeyId.value = cipher.generateRandom(32)
         } catch (e: Exception) {
             e.printStackTrace()
         }

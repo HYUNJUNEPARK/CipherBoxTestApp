@@ -6,8 +6,8 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
-import com.study.cipherbox.sdk.JavaUtil
-import com.study.cipherbox.sdk.aos.EncryptedSharedPreferencesManager
+import com.study.cipherbox.sdk.DataTypeConverter
+import com.study.cipherbox.sdk.aos.ESPManager
 import java.math.BigInteger
 import java.security.*
 import java.security.interfaces.ECPublicKey
@@ -19,12 +19,12 @@ import javax.crypto.spec.SecretKeySpec
 class CipherBox {
     companion object {
         private var instance: CipherBox? = null
-        private lateinit var espm: EncryptedSharedPreferencesManager
+        private lateinit var espm: ESPManager
         private lateinit var context: Context
 
         fun getInstance(): CipherBox? {
             if (instance == null) {
-                espm = EncryptedSharedPreferencesManager.getInstance(context)!!
+                espm = ESPManager.getInstance(context)!!
                 context = context
                 instance = CipherBox()
             }
@@ -142,7 +142,7 @@ class CipherBox {
             val affineX = ecPublicKey.w.affineX
             val affineY = ecPublicKey.w.affineY
             val uncompressedForm_str = "04$affineX$affineY"
-            val uncompressedForm_bytes = JavaUtil.hexStringToByteArray(uncompressedForm_str)
+            val uncompressedForm_bytes = DataTypeConverter.hexStringToByteArray(uncompressedForm_str)
             return Base64.encodeToString(uncompressedForm_bytes, Base64.NO_WRAP)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -173,8 +173,8 @@ class CipherBox {
 
             //bytes
             if (uncompressedForm_bytes[0].equals(0)) {
-                val affineX = JavaUtil.byteArrayToString(uncompressedForm_bytes, 1, 32)
-                val affineY = JavaUtil.byteArrayToString(uncompressedForm_bytes, 32, 32)
+                val affineX = DataTypeConverter.byteArrayToString(uncompressedForm_bytes, 1, 32)
+                val affineY = DataTypeConverter.byteArrayToString(uncompressedForm_bytes, 32, 32)
 
                 return hashMapOf(
                     "userId" to userId,
@@ -183,8 +183,8 @@ class CipherBox {
                 )
             }
             else {
-                val affineX = JavaUtil.byteArrayToString(uncompressedForm_bytes, 1, 32)
-                val affineY = JavaUtil.byteArrayToString(uncompressedForm_bytes, 32, 32)
+                val affineX = DataTypeConverter.byteArrayToString(uncompressedForm_bytes, 1, 32)
+                val affineY = DataTypeConverter.byteArrayToString(uncompressedForm_bytes, 32, 32)
 
                 return hashMapOf(
                     "userId" to userId,

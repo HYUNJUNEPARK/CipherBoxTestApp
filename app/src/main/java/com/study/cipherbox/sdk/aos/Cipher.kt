@@ -6,7 +6,7 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import androidx.annotation.RequiresApi
-import com.study.cipherbox.sdk.JavaUtil
+import com.study.cipherbox.sdk.DataTypeConverter
 import java.math.BigInteger
 import java.security.*
 import java.security.interfaces.ECPublicKey
@@ -17,17 +17,17 @@ import javax.crypto.KeyAgreement
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-class CipherBox {
+class Cipher {
     companion object {
-        private var instance: CipherBox? = null
-        private lateinit var espm: EncryptedSharedPreferencesManager
+        private var instance: com.study.cipherbox.sdk.aos.Cipher? = null
+        private lateinit var espm: ESPManager
         private lateinit var context: Context
 
-        fun getInstance(context: Context): CipherBox? {
+        fun getInstance(context: Context): com.study.cipherbox.sdk.aos.Cipher? {
             if (instance == null) {
-                espm = EncryptedSharedPreferencesManager.getInstance(context)!!
+                espm = ESPManager.getInstance(context)!!
                 Companion.context = context
-                instance = CipherBox()
+                instance = Cipher()
             }
             return instance
         }
@@ -252,8 +252,8 @@ class CipherBox {
 
     private fun byteArrayToString(keyArray: ByteArray): PublicKey? {
         try {
-            val _affineX = JavaUtil.byteArrayToString(keyArray, 1, 32)
-            val _affineY = JavaUtil.byteArrayToString(keyArray, 33, 32)
+            val _affineX = DataTypeConverter.byteArrayToString(keyArray, 1, 32)
+            val _affineY = DataTypeConverter.byteArrayToString(keyArray, 33, 32)
             val affineX = BigInteger(_affineX, 16)
             val affineY = BigInteger(_affineY, 16)
             val point = ECPoint(affineX, affineY)

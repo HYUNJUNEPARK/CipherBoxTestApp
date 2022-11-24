@@ -5,18 +5,21 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
-class EncryptedSharedPreferencesManager {
+/**
+ * ESP : EncryptedSharedPreference
+ */
+class ESPManager {
     companion object {
         const val PREFERENCE_NAME = "encrypted_pref"
-        private var instance: EncryptedSharedPreferencesManager? = null
+        private var instance: ESPManager? = null
         private lateinit var context: Context
         private lateinit var prefs: SharedPreferences
         private lateinit var prefsEditor: SharedPreferences.Editor
 
-        fun getInstance(_context: Context): EncryptedSharedPreferencesManager? {
+        fun getInstance(_context: Context): ESPManager? {
             if (instance == null) {
                 context = _context
-                instance = EncryptedSharedPreferencesManager()
+                instance = ESPManager()
             }
             return instance
         }

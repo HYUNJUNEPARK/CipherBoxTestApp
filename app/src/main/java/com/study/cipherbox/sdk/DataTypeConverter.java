@@ -2,7 +2,7 @@ package com.study.cipherbox.sdk;
 
 import androidx.annotation.NonNull;
 
-public class JavaUtil {
+public class DataTypeConverter {
     private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
 
     public static String byteArrayToString(@NonNull byte[] bytes) {
