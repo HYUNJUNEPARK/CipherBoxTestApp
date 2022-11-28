@@ -1,4 +1,4 @@
-package com.study.cipherbox.sdk.aos
+package com.study.cipherbox.sdk
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -6,14 +6,14 @@
     <data>
         <variable
             name="mainActivity"
-            type="com.study.cipherbox.app.MainActivity" />
+            type="com.study.cipherbox.MainActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
-        tools:context=".app.MainActivity">
+        tools:context=".MainActivity">
 
         <LinearLayout
             android:id="@+id/buttonLayout"
