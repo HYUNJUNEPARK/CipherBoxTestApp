@@ -1,4 +1,4 @@
-package com.study.cipherbox
+package com.study.cipher
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

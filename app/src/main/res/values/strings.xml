@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CipherBoxTestApp</string>
+    <string name="app_name">CipherTestApp</string>
     <string name="toast_msg_api_31">API 31 이상 사용 가능</string>
     <string name="toast_msg_empty_keystore">Empty Keystore</string>
     <string name="ui_send">send</string>

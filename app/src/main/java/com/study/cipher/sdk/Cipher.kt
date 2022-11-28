@@ -1,4 +1,4 @@
-package com.study.cipherbox.sdk
+package com.study.cipher.sdk
 
 import android.content.Context
 import android.os.Build
@@ -18,11 +18,11 @@ import javax.crypto.spec.SecretKeySpec
 
 class Cipher {
     companion object {
-        private var instance: com.study.cipherbox.sdk.Cipher? = null
+        private var instance: com.study.cipher.sdk.Cipher? = null
         private lateinit var espm: ESPManager
         private lateinit var context: Context
 
-        fun getInstance(context: Context): com.study.cipherbox.sdk.Cipher? {
+        fun getInstance(context: Context): com.study.cipher.sdk.Cipher? {
             if (instance == null) {
                 espm = ESPManager.getInstance(context)!!
                 Companion.context = context

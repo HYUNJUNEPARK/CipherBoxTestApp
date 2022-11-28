@@ -1,4 +1,4 @@
-package com.study.cipherbox
+package com.study.cipher
 
 import org.junit.Test
 import org.junit.Assert.*

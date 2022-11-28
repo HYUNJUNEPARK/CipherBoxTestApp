@@ -1,4 +1,4 @@
-package com.study.cipherbox.sdk;
+package com.study.cipher.sdk;
 
 import androidx.annotation.NonNull;
 

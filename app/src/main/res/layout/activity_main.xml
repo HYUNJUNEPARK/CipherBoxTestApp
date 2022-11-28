@@ -6,7 +6,7 @@
     <data>
         <variable
             name="mainActivity"
-            type="com.study.cipherbox.MainActivity" />
+            type="com.study.cipher.MainActivity" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

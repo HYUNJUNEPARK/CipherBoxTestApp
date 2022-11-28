@@ -1,4 +1,4 @@
-package com.study.cipherbox.sdk
+package com.study.cipher.sdk
 
 import android.content.Context
 import android.content.SharedPreferences

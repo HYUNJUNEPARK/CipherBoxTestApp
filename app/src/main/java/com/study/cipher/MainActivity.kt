@@ -1,4 +1,4 @@
-package com.study.cipherbox
+package com.study.cipher
 
 import android.os.Build
 import android.os.Bundle
@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.study.cipherbox.databinding.ActivityMainBinding
+import com.study.cipher.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

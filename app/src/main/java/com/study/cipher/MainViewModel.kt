@@ -1,4 +1,4 @@
-package com.study.cipherbox
+package com.study.cipher
 
 import android.app.Application
 import android.content.Context
@@ -7,8 +7,8 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.study.cipherbox.sdk.Cipher
-import com.study.cipherbox.sdk.ESPManager
+import com.study.cipher.sdk.Cipher
+import com.study.cipher.sdk.ESPManager
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
     private val context = getApplication<Application>().applicationContext
