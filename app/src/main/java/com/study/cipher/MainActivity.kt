@@ -17,25 +17,27 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-                binding.mainActivity = this
-
-                viewModel.init().let { result ->
-                    binding.keyAgreementButton.isEnabled = result
-                }
-                viewModel.publicKey.observe(this) { publicKey ->
-                    binding.publicKeyTextView.text = publicKey
-                }
-                viewModel.espKeyList.observe(this) { keyIdList ->
-                    binding.publicKeyIdTextView.text = keyIdList.toString()
-                }
-                viewModel.currentSharedSecretKeyId.observe(this) { currentKeyId ->
-                    binding.keyIdTextView.text = currentKeyId
-                }
-            } else {
+            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S).not()) {
                 Toast.makeText(this, getString(R.string.toast_msg_api_31), Toast.LENGTH_SHORT).show()
+                return
             }
+
+            binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+            binding.mainActivity = this
+
+            viewModel.init().let { result ->
+                binding.keyAgreementButton.isEnabled = result
+            }
+            viewModel.publicKey.observe(this) { publicKey ->
+                binding.publicKeyTextView.text = publicKey
+            }
+            viewModel.espKeyList.observe(this) { keyIdList ->
+                binding.publicKeyIdTextView.text = keyIdList.toString()
+            }
+            viewModel.currentSharedSecretKeyId.observe(this) { currentKeyId ->
+                binding.keyIdTextView.text = currentKeyId
+            }
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
