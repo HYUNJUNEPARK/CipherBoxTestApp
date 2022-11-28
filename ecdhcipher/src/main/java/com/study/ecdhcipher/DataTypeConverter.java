@@ -1,4 +1,4 @@
-package com.study.cipher.sdk;
+package com.study.ecdhcipher;
 
 import androidx.annotation.NonNull;
 

@@ -1,4 +1,4 @@
-package com.study.cipher.sdk
+package com.study.ecdhcipher
 
 import android.content.Context
 import android.os.Build
@@ -16,17 +16,17 @@ import javax.crypto.KeyAgreement
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-class Cipher {
+class EcdhCipher {
     companion object {
-        private var instance: com.study.cipher.sdk.Cipher? = null
+        private var instance: EcdhCipher? = null
         private lateinit var espm: ESPManager
         private lateinit var context: Context
 
-        fun getInstance(context: Context): com.study.cipher.sdk.Cipher? {
+        fun getInstance(context: Context): EcdhCipher? {
             if (instance == null) {
                 espm = ESPManager.getInstance(context)!!
                 Companion.context = context
-                instance = Cipher()
+                instance = EcdhCipher()
             }
             return instance
         }
@@ -95,7 +95,7 @@ class Cipher {
             }
 
             //publicKey Uncompressed Form
-            //byte[65] = [0x04][affineX(32byte)][affineY(32byte)]
+            //byte[65] = [0x04(1byte)][affineX(32byte)][affineY(32byte)]
             val ecPublicKey: ByteArray = byteArrayOf(0x04) + affineX + affineY
 
             //ByteArray -> String
@@ -118,8 +118,8 @@ class Cipher {
             val random: ByteArray = Base64.decode(secureRandom, Base64.NO_WRAP)
 
             //byteArray -> publicKey
-            val _fridendPublicKey: ByteArray = Base64.decode(publicKey, Base64.NO_WRAP)
-            val friendPublicKey: PublicKey = byteArrayToPublicKey(_fridendPublicKey)!!
+            val _friendPublicKey: ByteArray = Base64.decode(publicKey, Base64.NO_WRAP)
+            val friendPublicKey: PublicKey = byteArrayToPublicKey(_friendPublicKey)!!
 
             val myPrivateKey: PrivateKey
             androidKeyStore.getEntry(defaultKeyStoreAlias, null).let { keyStoreEntry ->
@@ -257,14 +257,14 @@ class Cipher {
                     decodedKey.size,
                     KeyProperties.KEY_ALGORITHM_AES
                 ).let { secretKeySpec ->
-                    val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
-                    cipher.init(
+                    val ecdhCipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
+                    ecdhCipher.init(
                         Cipher.DECRYPT_MODE,
                         secretKeySpec,
                         IvParameterSpec(iv)
                     )
                     Base64.decode(message, Base64.NO_WRAP).let { decryption ->
-                        decryptedMessage = cipher.doFinal(decryption)
+                        decryptedMessage = ecdhCipher.doFinal(decryption)
                     }
                 }
             }
