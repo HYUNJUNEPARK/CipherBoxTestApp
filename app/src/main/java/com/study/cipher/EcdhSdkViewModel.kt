@@ -10,9 +10,9 @@ import androidx.lifecycle.MutableLiveData
 import com.study.ecdhcipher.ESPManager
 import com.study.ecdhcipher.EcdhCipher
 
-class MainViewModel(application: Application): AndroidViewModel(application) {
+class EcdhSdkViewModel(application: Application): AndroidViewModel(application) {
     private val context = getApplication<Application>().applicationContext
-    private val ecdhCipher = EcdhCipher.getInstance(context)!!
+    private val ecdhCipherSdk = EcdhCipher.getInstance(context)!!
 
     val publicKey: LiveData<String?>
         get() = _publicKey
@@ -42,7 +42,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     @RequiresApi(Build.VERSION_CODES.S)
     fun generateECKeyPair(): Boolean {
         try {
-            ecdhCipher.generateECKeyPair()
+            ecdhCipherSdk.generateECKeyPair()
             getPublicKey()
             return true
         } catch (e: Exception) {
@@ -52,7 +52,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun reset() {
-        ecdhCipher.reset()
+        ecdhCipherSdk.reset()
         _espKeyList.value = null
         _publicKey.value = null
     }
@@ -62,7 +62,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             //Error Log
             return null
         }
-        return ecdhCipher.encrypt(message, currentSharedSecretKeyId.value!!)
+        return ecdhCipherSdk.encrypt(message, currentSharedSecretKeyId.value!!)
     }
 
     fun decrypt(message: String): String? {
@@ -70,7 +70,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             //Error Log
             return null
         }
-        return ecdhCipher.decrypt(message, currentSharedSecretKeyId.value!!)
+        return ecdhCipherSdk.decrypt(message, currentSharedSecretKeyId.value!!)
     }
 
     fun generateSharedSecretKey(): Boolean {
@@ -78,7 +78,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             //SharedSecreteKey 의 KeyId 와 생성 시 필요한 secureRandom
             generateRandom()
 
-            ecdhCipher.generateSharedSecretKey(
+            ecdhCipherSdk.generateSharedSecretKey(
                 _publicKey.value!!,
                 currentSharedSecretKeyId.value!!
             )
@@ -93,7 +93,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private fun getPublicKey() {
         try {
-            val cipher = ecdhCipher
+            val cipher = ecdhCipherSdk
             if (cipher.getECPublicKey() == null) {
                 return
             }
@@ -105,7 +105,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private fun getESPKeyIdList(context: Context) {
         try {
-
             val espm = ESPManager.getInstance(context)!!
 
             espm.getKeyIdList().let {
@@ -123,7 +122,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private fun isECKeyPairOnKeyStore(): Boolean {
         try {
-            return ecdhCipher.isECKeyPairOnKeyStore()
+            return ecdhCipherSdk.isECKeyPairOnKeyStore()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -132,7 +131,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private fun generateRandom() {
         try {
-            _currentSharedSecretKeyId.value = ecdhCipher.generateRandom(32)
+            _currentSharedSecretKeyId.value = ecdhCipherSdk.generateRandom(32)
         } catch (e: Exception) {
             e.printStackTrace()
         }
