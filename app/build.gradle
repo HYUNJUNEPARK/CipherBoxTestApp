@@ -43,13 +43,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    //EncryptedSharedPreferences
-    implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha03'
-
     //viewModel
     implementation 'androidx.fragment:fragment-ktx:1.3.0'
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0"
 
     //lib
     implementation project(":ecdhcipher")
+    implementation project(':aescipher')
 }
