@@ -1,4 +1,4 @@
-package com.study.cipher
+package com.study.cipher.ecdhcipher
 
 import android.app.Application
 import android.content.Context
@@ -9,7 +9,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.study.ecdhcipher.ESPManager
 import com.study.ecdhcipher.EcdhCipher
-import java.util.*
 
 class EcdhSdkViewModel(application: Application): AndroidViewModel(application) {
     private val context = getApplication<Application>().applicationContext

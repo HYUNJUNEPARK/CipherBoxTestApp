@@ -1,4 +1,4 @@
-package com.study.cipher
+package com.study.cipher.ecdhcipher
 
 import android.os.Build
 import android.os.Bundle
@@ -7,10 +7,11 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.study.cipher.databinding.ActivityMainBinding
+import com.study.cipher.R
+import com.study.cipher.databinding.ActivityEcdhCipherBinding
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+class EcdhCiperActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityEcdhCipherBinding
     private val viewModel: EcdhSdkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,8 +23,8 @@ class MainActivity : AppCompatActivity() {
                 return
             }
 
-            binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-            binding.mainActivity = this
+            binding = DataBindingUtil.setContentView(this, R.layout.activity_ecdh_cipher)
+            binding.ecdhCipherActivity = this
 
             initObserver()
 
