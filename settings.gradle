@@ -14,5 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CipherStudy"
 include ':app'
-include ':ecdhcipher'
-include ':aescipher'
+include ':ecdh-cipher'
+include ':aes-cipher'
