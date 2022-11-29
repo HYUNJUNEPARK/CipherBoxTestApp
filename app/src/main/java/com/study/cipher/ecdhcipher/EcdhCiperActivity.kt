@@ -1,4 +1,4 @@
-package com.study.cipher
+package com.study.cipher.ecdhcipher
 
 import android.os.Build
 import android.os.Bundle
@@ -7,11 +7,12 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.study.cipher.databinding.ActivityMainBinding
+import com.study.cipher.R
+import com.study.cipher.databinding.ActivityEcdhCipherBinding
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private val viewModel: MainViewModel by viewModels()
+class EcdhCiperActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityEcdhCipherBinding
+    private val viewModel: EcdhSdkViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,33 +23,42 @@ class MainActivity : AppCompatActivity() {
                 return
             }
 
-            binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-            binding.mainActivity = this
+            binding = DataBindingUtil.setContentView(this, R.layout.activity_ecdh_cipher)
+            binding.ecdhCipherActivity = this
 
-            viewModel.init().let { result ->
-                binding.keyAgreementButton.isEnabled = result
-            }
-            viewModel.publicKey.observe(this) { publicKey ->
-                binding.publicKeyTextView.text = publicKey
-            }
-            viewModel.espKeyList.observe(this) { keyIdList ->
-                binding.publicKeyIdTextView.text = keyIdList.toString()
-            }
-            viewModel.currentSharedSecretKeyId.observe(this) { currentKeyId ->
-                binding.keyIdTextView.text = currentKeyId
-            }
+            initObserver()
 
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
+    private fun initObserver() {
+        viewModel.publicKey.observe(this) { publicKey ->
+            binding.publicKeyTextView.text = publicKey
+        }
+
+        viewModel.espKeyList.observe(this) { keyIdList ->
+            binding.publicKeyIdTextView.text = keyIdList.toString()
+        }
+
+        viewModel.currentSharedSecretKeyId.observe(this) { currentKeyId ->
+            binding.keyIdTextView.text = currentKeyId
+        }
+
+        viewModel.isECKeyPair.observe(this) { isECKeyPair ->
+            binding.keyAgreementButton.isEnabled = isECKeyPair
+        }
+
+        viewModel.isSharedSecretKey.observe(this) { isSharedSecretKey ->
+            binding.sendButton.isEnabled = isSharedSecretKey
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.S)
     fun onGenerateECKeyPair() {
         try {
-            viewModel.generateECKeyPair().let { result ->
-                binding.keyAgreementButton.isEnabled = result
-            }
+            viewModel.generateECKeyPair()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -56,9 +66,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onAgreementKey() {
         try {
-            viewModel.generateSharedSecretKey().let { result ->
-                binding.sendButton.isEnabled = result
-            }
+            viewModel.generateSharedSecretKey()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -67,8 +75,6 @@ class MainActivity : AppCompatActivity() {
     fun onReset() {
         try {
             viewModel.reset()
-            binding.keyAgreementButton.isEnabled = false
-            binding.keyIdTextView.text = null
         } catch (e: Exception) {
             e.printStackTrace()
         }
