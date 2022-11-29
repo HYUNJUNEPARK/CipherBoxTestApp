@@ -56,9 +56,7 @@ class EcdhCipher {
             )
             val parameterSpec = KeyGenParameterSpec.Builder(
                 defaultKeyStoreAlias,
-                KeyProperties.PURPOSE_ENCRYPT or
-                        KeyProperties.PURPOSE_DECRYPT or
-                        KeyProperties.PURPOSE_AGREE_KEY
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_AGREE_KEY
             ).run {
                 setUserAuthenticationRequired(false)
                 ECGenParameterSpec("secp256r1")
@@ -76,7 +74,8 @@ class EcdhCipher {
      */
     fun getECPublicKey(): String? {
         try {
-            val publicKey = androidKeyStore.getCertificate(defaultKeyStoreAlias).publicKey as ECPublicKey
+            val publicKey =
+                androidKeyStore.getCertificate(defaultKeyStoreAlias).publicKey as ECPublicKey
 
             //첫번째 인덱스의 숫자가 0인 경우, 맨 앞 인덱스에 0 이 추가되어 byte[33]이 나오게 됨
             //이런 경우 불필요한 인덱스를 잘라내 byte[32] 를 맞춰주는 작업
@@ -125,25 +124,32 @@ class EcdhCipher {
             androidKeyStore.getEntry(defaultKeyStoreAlias, null).let { keyStoreEntry ->
                 myPrivateKey = (keyStoreEntry as KeyStore.PrivateKeyEntry).privateKey
             }
-            var sharedSecretKey: String
-            KeyAgreement.getInstance("ECDH").apply {
+
+            //sharedSecretKey
+            val sharedSecretKeyBytes = KeyAgreement.getInstance("ECDH").apply {
                 init(myPrivateKey)
                 doPhase(friendPublicKey, true)
-            }.generateSecret().let { _sharedSecret ->
-                val messageDigest = MessageDigest.getInstance(KeyProperties.DIGEST_SHA256).apply {
-                    update(_sharedSecret)
-                }
-                val hash = messageDigest.digest(random)
-                SecretKeySpec(
-                    hash,
-                    KeyProperties.KEY_ALGORITHM_AES
-                ).let { secretKeySpec ->
-                    sharedSecretKey = Base64.encodeToString(secretKeySpec.encoded, Base64.NO_WRAP)
-                }
-            }
+            }.generateSecret()
+
+            //hash(SHA256)
+            val hash = MessageDigest.getInstance(KeyProperties.DIGEST_SHA256).apply {
+                update(sharedSecretKeyBytes)
+            }.digest(random)
+
+            //keySpec
+            val secretKeySpec = SecretKeySpec(
+                hash,
+                KeyProperties.KEY_ALGORITHM_AES
+            )
+
+            //sharedSecretKey(String)
+            val sharedSecretKeyString = Base64.encodeToString(
+                /*encodingKeySpec*/ secretKeySpec.encoded,
+                /*padding*/ Base64.NO_WRAP
+            )
 
             //ESP 에 sharedSecretKey 저장
-            espm.putString(keyId, sharedSecretKey)
+            espm.putString(keyId, sharedSecretKeyString)
 
             return keyId
         } catch (e: Exception) {
@@ -170,15 +176,18 @@ class EcdhCipher {
      */
     fun generateRandom(size: Int): String? {
         try {
-            return ByteArray(size).apply {
-                SecureRandom().nextBytes(this)
-            }.let { randomBytes ->
-                Base64.encodeToString(randomBytes, Base64.NO_WRAP)
-            }
+            return Base64.encodeToString(
+                /*secureRandomBytes*/
+                ByteArray(size).apply {
+                    SecureRandom().nextBytes(this)
+                },
+                /*padding*/
+                Base64.NO_WRAP
+            )
         } catch (e: Exception) {
             e.printStackTrace()
+            return null
         }
-        return null
     }
 
     /**
@@ -189,12 +198,12 @@ class EcdhCipher {
         espm.apply {
             try {
                 remove(keyId)
-            }
-            catch (e: Exception) {
+            } catch (e: Exception) {
                 return false
             }
+            //정상적으로 지워졌는지 확인 후 Boolean 반환한다.
             getString(keyId, "").let { result ->
-                return result == ""
+                return result.isEmpty()
             }
         }
     }
@@ -207,73 +216,84 @@ class EcdhCipher {
      */
     fun encrypt(message: String, keyId: String): String? {
         try {
-            val encodedSharedSecretKey: String? =
-                if (espm.getString(keyId, "") == "") {
-                    null
-                } else {
-                    espm.getString(keyId, "")
-                }
-
-            val encryptedMessage: String
-            Base64.decode(encodedSharedSecretKey, Base64.NO_WRAP).let { decodedKey ->
-                SecretKeySpec(
-                    decodedKey,
-                    0,
-                    decodedKey.size,
-                    KeyProperties.KEY_ALGORITHM_AES
-                ).let { secretKeySpec ->
-                    val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
-                    cipher.init(
-                        Cipher.ENCRYPT_MODE,
-                        secretKeySpec,
-                        IvParameterSpec(iv)
-                    )
-                    cipher.doFinal(message.toByteArray()).let { _encryptedMessage ->
-                        encryptedMessage = Base64.encodeToString(_encryptedMessage, Base64.NO_WRAP)
-                    }
-                }
+            //SharedSecretKey
+            val encodingSharedSecretKey: String? = espm.getString(keyId, "").ifEmpty {
+                return null
             }
-            return encryptedMessage
+            val decodingSharedSecretKey = Base64.decode(encodingSharedSecretKey, Base64.NO_WRAP)
+
+            //KeySpec
+            val secretKeySpec = SecretKeySpec(
+                decodingSharedSecretKey,
+                0,
+                decodingSharedSecretKey.size,
+                KeyProperties.KEY_ALGORITHM_AES
+            )
+
+            //Cipher
+            val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
+            cipher.init(
+                Cipher.ENCRYPT_MODE,
+                secretKeySpec,
+                IvParameterSpec(iv)
+            )
+
+            //encryptedMessage(ByteArray) -> encodingEncryptedMessage(String, Base64 encoding)
+            return Base64.encodeToString(
+                /*encryptedMessage(ByteArray)*/ cipher.doFinal(message.toByteArray()),
+                /*padding*/ Base64.NO_WRAP
+            )
         } catch (e: Exception) {
             e.printStackTrace()
+            return null
         }
-        return null
     }
 
     /**
      * 메시지를 복호화한다.
-     * @param message 암호화 시킬 메시지
+     * @param encryptedMessage 암호화 시킬 메시지
      * @param keyId sharedSecretKey 식별자
      * @return 복호화된 메시지
      */
-    fun decrypt(message: String, keyId: String): String? {
+    fun decrypt(encryptedMessage: String, keyId: String): String? {
         try {
-            val encodedSharedSecretKey: String? = espm.getString(keyId, "").ifEmpty { null }
-            var decryptedMessage: ByteArray
-            Base64.decode(encodedSharedSecretKey, Base64.NO_WRAP).let { decodedKey ->
-                SecretKeySpec(
-                    decodedKey,
-                    0,
-                    decodedKey.size,
-                    KeyProperties.KEY_ALGORITHM_AES
-                ).let { secretKeySpec ->
-                    val ecdhCipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
-                    ecdhCipher.init(
-                        Cipher.DECRYPT_MODE,
-                        secretKeySpec,
-                        IvParameterSpec(iv)
-                    )
-                    Base64.decode(message, Base64.NO_WRAP).let { decryption ->
-                        decryptedMessage = ecdhCipher.doFinal(decryption)
-                    }
-                }
+            //SharedSecretKey
+            val encodingSharedSecretKey: String? = espm.getString(keyId, "").ifEmpty {
+                return null
             }
+            val decodingSharedSecretKey = Base64.decode(encodingSharedSecretKey, Base64.NO_WRAP)
+
+            //SecretKeySpec
+            val secretKeySpec = SecretKeySpec(
+                decodingSharedSecretKey,
+                0,
+                decodingSharedSecretKey.size,
+                KeyProperties.KEY_ALGORITHM_AES
+            )
+
+            //cipher
+            val cipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
+            cipher.init(
+                Cipher.DECRYPT_MODE,
+                secretKeySpec,
+                IvParameterSpec(iv)
+            )
+
+            //encodingEncryptedMessage(String) -> decodingEncryptedMessage(ByteArray)
+            val decodingEncryptedMessage = Base64.decode(
+                /*encodingEncryptedMessage(String)*/ encryptedMessage,
+                /*padding*/ Base64.NO_WRAP
+            )
+
+            //decodingEncryptedMessage(ByteArray) -> decryptedMessage(ByteArray)
+            val decryptedMessage = cipher.doFinal(decodingEncryptedMessage)
+
             //ByteArray -> String
             return String(decryptedMessage)
         } catch (e: Exception) {
             e.printStackTrace()
+            return null
         }
-        return null
     }
 
     /**
@@ -282,17 +302,20 @@ class EcdhCipher {
      */
     fun isECKeyPairOnKeyStore(): Boolean {
         try {
-            val keyStoreEntry: KeyStore.Entry? = androidKeyStore.getEntry(defaultKeyStoreAlias, null)
+            val keyStoreEntry: KeyStore.Entry? =
+                androidKeyStore.getEntry(defaultKeyStoreAlias, null)
             return keyStoreEntry != null
         } catch (e: Exception) {
             e.printStackTrace()
+            return false
         }
-        return false
     }
 
     /**
      * ByteArray 타입 Uncompressed form 으로 publicKey 생성
      * ByteArray affineX, affineY 로 ECPoint 를 생성해 PublicKey 로 복원한다.
+     * @param keyByteArray PublicKey ByteArray(Uncompressed Form)
+     * @return ECPublicKey
      */
     private fun byteArrayToPublicKey(keyByteArray: ByteArray): PublicKey? {
         try {
@@ -300,21 +323,31 @@ class EcdhCipher {
             val _affineX = DataTypeConverter.byteArrayToString(keyByteArray, 1, 32)
             val _affineY = DataTypeConverter.byteArrayToString(keyByteArray, 33, 32)
 
-            //String -> BigInterger
+            //String -> BigInteger
             val affineX = BigInteger(_affineX, 16)
             val affineY = BigInteger(_affineY, 16)
 
-            val point = ECPoint(affineX, affineY)
-
-            val algorithmParameters = AlgorithmParameters.getInstance(KeyProperties.KEY_ALGORITHM_EC)
+            //AlgorithmParameters
+            val algorithmParameters =
+                AlgorithmParameters.getInstance(KeyProperties.KEY_ALGORITHM_EC)
             algorithmParameters.init(ECGenParameterSpec("secp256r1"))
-            val parameterSpec = algorithmParameters.getParameterSpec(ECParameterSpec::class.java)
-            val publicKeySpec: KeySpec = ECPublicKeySpec(point, parameterSpec)
 
+            //ECParameterSpec
+            val parameterSpec = algorithmParameters.getParameterSpec(ECParameterSpec::class.java)
+
+            //KeySpec
+            val publicKeySpec = ECPublicKeySpec(
+                /*ECPoint*/
+                ECPoint(affineX, affineY),
+                /*ECParameterSpec*/
+                parameterSpec
+            )
+
+            //publicKey -> ECPublicKey
             return KeyFactory.getInstance(KeyProperties.KEY_ALGORITHM_EC).generatePublic(publicKeySpec) as ECPublicKey
         } catch (e: Exception) {
             e.printStackTrace()
+            return null
         }
-        return null
     }
 }
