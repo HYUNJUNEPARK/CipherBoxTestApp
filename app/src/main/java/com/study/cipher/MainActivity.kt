@@ -15,10 +15,8 @@ class MainActivity : AppCompatActivity() {
         const val AES_CIPHER_SDK = "1"
     }
 
-    private lateinit var binding: ActivityMainBinding
-
     private var sdk: String? = null
-
+    private lateinit var binding: ActivityMainBinding
     private val ecdhSdkViewModel: EcdhSdkViewModel by viewModels()
     private val aesSdkViewModel: AesSdkViewModel by viewModels()
 
@@ -27,8 +25,8 @@ class MainActivity : AppCompatActivity() {
 
         try {
             //TODO 사용할 SDK 정의
-            //sdk = ECDH_CIPHER_SDK
-            sdk = AES_CIPHER_SDK
+            sdk = ECDH_CIPHER_SDK
+            //sdk = AES_CIPHER_SDK
 
             if (sdk == ECDH_CIPHER_SDK) {
                 if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.S).not()) {
@@ -36,12 +34,10 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
             }
-
             binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
             binding.mainActivity = this
 
             initObserver()
-
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -51,29 +47,25 @@ class MainActivity : AppCompatActivity() {
         //ecdh-cipher-sdk
         if (sdk == ECDH_CIPHER_SDK) {
             ecdhSdkViewModel.publicKey.observe(this) { publicKey ->
-                binding.publicKeyTextView.text = publicKey
+                binding.publicKey = publicKey
             }
 
             ecdhSdkViewModel.espKeyList.observe(this) { keyIdList ->
-                binding.publicKeyIdTextView.text = keyIdList.toString()
+                binding.keyIdListInESP = keyIdList.toString()
             }
 
             ecdhSdkViewModel.currentSharedSecretKeyId.observe(this) { currentKeyId ->
-                binding.keyIdTextView.text = currentKeyId
+                binding.currentKeyId = currentKeyId
             }
 
             ecdhSdkViewModel.isECKeyPair.observe(this) { isECKeyPair ->
-                binding.keyAgreementButton.isEnabled = isECKeyPair
+                binding.isEcKeyPair = isECKeyPair
             }
 
             ecdhSdkViewModel.isSharedSecretKey.observe(this) { isSharedSecretKey ->
-                binding.sendButton.isEnabled = isSharedSecretKey
+                binding.isSharedSecretKey = isSharedSecretKey
+
             }
-        }
-
-        //aes-cipher-sdk
-        if (sdk == AES_CIPHER_SDK) {
-
         }
     }
 
@@ -83,11 +75,6 @@ class MainActivity : AppCompatActivity() {
             //ecdh-cipher-sdk
             if (sdk == ECDH_CIPHER_SDK) {
                 ecdhSdkViewModel.generateECKeyPair()
-            }
-
-            //aes-cipher-sdk
-            if (sdk == AES_CIPHER_SDK) {
-
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -100,11 +87,6 @@ class MainActivity : AppCompatActivity() {
             if (sdk == ECDH_CIPHER_SDK) {
                 ecdhSdkViewModel.generateSharedSecretKey()
             }
-
-            //aes-cipher-sdk
-            if (sdk == AES_CIPHER_SDK) {
-
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -116,11 +98,6 @@ class MainActivity : AppCompatActivity() {
             if (sdk == ECDH_CIPHER_SDK) {
                 ecdhSdkViewModel.reset()
             }
-
-            //aes-cipher-sdk
-            if (sdk == AES_CIPHER_SDK) {
-
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -129,59 +106,73 @@ class MainActivity : AppCompatActivity() {
     fun onSend() {
         try {
             val message = binding.messageEditText.text.toString()
-
             binding.originMessage = message
 
             //ecdh-cipher-sdk
             if (sdk == ECDH_CIPHER_SDK) {
                 //encrypt
-                ecdhSdkViewModel.encrypt(message).let { encryptedMsg ->
-                    if (encryptedMsg == null) {
-                        binding.encryptionCBCTextView.text = resources.getString(R.string.error_message)
-                        return
-                    }
-                    binding.encryptionCBCTextView.text = encryptedMsg
-
-                    //decrypt
-                    ecdhSdkViewModel.decrypt(encryptedMsg).let { decryptedMsg ->
-                        if (decryptedMsg == null) {
-                            binding.decryptionCBCTextView.text = resources.getString(R.string.error_message)
-                            return
-                        }
-                        binding.decryptionCBCTextView.text = decryptedMsg
-                    }
+                val encryptedMsg = ecdhSdkViewModel.encrypt(message)
+                if (isCipherError(encryptedMsg, CipherState.ENCRYPTION)) {
+                    return
                 }
-                binding.messageEditText.text = null
+                //decrypt
+                val decryptedMsg = ecdhSdkViewModel.decrypt(encryptedMsg!!)
+                if (isCipherError(decryptedMsg, CipherState.DECRYPTION)) {
+                    return
+                }
             }
 
             //aes-cipher-sdk
             if (sdk == AES_CIPHER_SDK) {
                 //encrypt
-                aesSdkViewModel.encrypt(message).let { encryptedMsg ->
-                    if (encryptedMsg == null) {
-                        binding.encryptionCBCTextView.text = resources.getString(R.string.error_message)
-                        return
-                    }
-                    binding.encryptedMessage = encryptedMsg
-                }
-
-                //decrypt
-                val encryptedMessage = binding.encryptedMessage?.ifEmpty {
+                val encryptedMsg = aesSdkViewModel.encrypt(message)
+                if (isCipherError(encryptedMsg, CipherState.ENCRYPTION)) {
                     return
                 }
-                aesSdkViewModel.decrypt(encryptedMessage!!).let { decryptedMsg ->
-                    if (decryptedMsg == null) {
-                        binding.decryptionCBCTextView.text = resources.getString(R.string.error_message)
-                        return
-                    }
-                    binding.decryptedMessage = decryptedMsg
+                //decrypt
+                val decryptedMsg = aesSdkViewModel.decrypt(encryptedMsg!!)
+                if (isCipherError(decryptedMsg, CipherState.DECRYPTION)) {
+                    return
                 }
-
-                //null
-                binding.editMessage = null
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
+
+    /**
+     * 암호화 복호화 과정에서 에러가 있었는지 확인하고 UI 를 그려준다.
+     * @param message 암호화/복호화 결과 메시지
+     * @param mode CipherState.ENCRYPTION, CipherState.DECRYPTION
+     * @return 에러가 있다면 true, 없다면 false
+     */
+    private fun isCipherError(message: String?, mode: CipherState): Boolean {
+        if (mode == CipherState.DECRYPTION) {
+            if (message == null) {
+                binding.decryptedMessage = resources.getString(R.string.error_message)
+                binding.editMessage = null
+                return true
+            } else {
+                binding.decryptedMessage = message
+                binding.editMessage = null
+                return false
+            }
+        }
+        if (mode == CipherState.ENCRYPTION) {
+            if (message == null) {
+                binding.encryptedMessage = resources.getString(R.string.error_message)
+                binding.editMessage = null
+                return true
+            } else {
+                binding.encryptedMessage = message
+                binding.editMessage = null
+                return false
+            }
+        }
+        return true
+    }
+}
+
+enum class CipherState() {
+    ENCRYPTION, DECRYPTION
 }
