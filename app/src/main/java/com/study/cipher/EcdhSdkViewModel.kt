@@ -1,4 +1,4 @@
-package com.study.cipher.ecdhcipher
+package com.study.cipher
 
 import android.app.Application
 import android.content.Context

@@ -5,15 +5,51 @@
 
     <data>
         <variable
-            name="ecdhCipherActivity"
-            type="com.study.cipher.ecdhcipher.EcdhCiperActivity" />
+            name="mainActivity"
+            type="com.study.cipher.MainActivity" />
+
+        <variable
+            name="originMessage"
+            type="String" />
+
+        <variable
+            name="decryptedMessage"
+            type="String" />
+
+        <variable
+            name="encryptedMessage"
+            type="String" />
+
+        <variable
+            name="editMessage"
+            type="String" />
+
+        <variable
+            name="publicKey"
+            type="String" />
+
+        <variable
+            name="keyIdListInESP"
+            type="String" />
+
+        <variable
+            name="currentKeyId"
+            type="String" />
+
+        <variable
+            name="isEcKeyPair"
+            type="Boolean" />
+
+        <variable
+            name="isSharedSecretKey"
+            type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="10dp"
-        tools:context=".ecdhcipher.EcdhCiperActivity">
+        tools:context=".MainActivity">
 
         <LinearLayout
             android:id="@+id/buttonLayout"
@@ -30,12 +66,13 @@
                 android:layout_height="wrap_content"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:onClick="@{()->ecdhCipherActivity.onGenerateECKeyPair()}"
+                android:onClick="@{()-> mainActivity.onGenerateECKeyPair()}"
                 android:text="@string/ui_key_generate"
                 android:textAllCaps="false" />
 
             <TextView
                 android:id="@+id/publicKeyTextView"
+                android:text="@{publicKey}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </TextView>
@@ -46,16 +83,17 @@
                 android:layout_height="wrap_content"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:onClick="@{()->ecdhCipherActivity.onAgreementKey()}"
+                android:enabled="@{isEcKeyPair}"
+                android:onClick="@{()-> mainActivity.onAgreementKey()}"
                 android:text="@string/ui_key_agreement"
                 android:textAllCaps="false" />
 
             <TextView
                 android:id="@+id/keyIdTextView"
                 android:layout_width="match_parent"
+                android:text="@{currentKeyId}"
                 android:layout_height="wrap_content">
             </TextView>
-
 
             <Button
                 android:id="@+id/resetButton"
@@ -63,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:minWidth="0dp"
                 android:minHeight="0dp"
-                android:onClick="@{()->ecdhCipherActivity.onReset()}"
+                android:onClick="@{()-> mainActivity.onReset()}"
                 android:text="@string/ui_reset"
                 android:textAllCaps="false" />
         </LinearLayout>
@@ -91,6 +129,7 @@
                     android:inputType="text"
                     android:autofillHints="@string/ui_input_your_message"
                     android:hint="@string/ui_input_your_message"
+                    android:text="@{editMessage}"
                     android:maxLines="1"
                     android:textSize="14sp" />
 
@@ -99,10 +138,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:enabled="false"
                     android:minWidth="0dp"
+                    android:enabled="@{isSharedSecretKey}"
                     android:minHeight="0dp"
-                    android:onClick="@{()->ecdhCipherActivity.onSend()}"
+                    android:onClick="@{()-> mainActivity.onSend()}"
                     android:text="@string/ui_send"
                     android:textSize="12sp" />
             </LinearLayout>
@@ -118,7 +157,7 @@
                 android:id="@+id/userMessageTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/ui_origin_message" />
+                android:text="@{originMessage}" />
 
             <View
                 android:layout_width="match_parent"
@@ -138,7 +177,7 @@
                 android:id="@+id/encryptionCBCTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/ui_encryption_message" />
+                android:text="@{encryptedMessage}" />
 
             <View
                 android:layout_width="match_parent"
@@ -158,7 +197,7 @@
                 android:id="@+id/decryptionCBCTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/ui_decryption_message" />
+                android:text="@{decryptedMessage}" />
 
             <View
                 android:layout_width="match_parent"
@@ -167,7 +206,6 @@
                 android:layout_marginBottom="7dp"
                 android:background="#989393" />
         </LinearLayout>
-
 
         <ScrollView
             app:layout_constraintStart_toStartOf="parent"
@@ -181,17 +219,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </ScrollView>
-
-
-<!--        <LinearLayout-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/messageLayout"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:orientation="vertical">-->
-<!--        </LinearLayout>-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
